@@ -31,7 +31,7 @@ firestore.settings(settings);
 
 class App extends React.Component {
   state = {
-    selectedTab: 0,
+    selectedTab: 3,
   };
 
   tabChange = (event, value) => {

@@ -239,7 +239,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, path } = this.props;
+    const { classes, path, filter } = this.props;
     const { data, columnData, order, orderBy, selected, rowsPerPage, page } = this.state;
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
@@ -247,6 +247,7 @@ class EnhancedTable extends React.Component {
       <FirestoreCollection
         path={path}
         sort={orderBy+':'+order}
+        filter={filter}
         render={({ isLoading, data }) => {
           return (
             <Paper className={classes.root}>

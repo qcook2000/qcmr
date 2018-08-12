@@ -6,7 +6,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
+// import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,9 +15,11 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
+import { FirestoreCollection } from 'react-firestore';
 
 function getSorting(order, orderBy) {
   return order === 'desc'
@@ -165,6 +167,10 @@ const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto',
   },
+  progress: {
+    position: 'absolute',
+    width: '100%',
+  },
 });
 
 class EnhancedTable extends React.Component {
@@ -233,74 +239,102 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes } = this.props;
+    const { classes, path } = this.props;
     const { data, columnData, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
-      <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              columnData={columnData}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
-            />
-            <TableBody>
-              {data
-                .sort(getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
-                        {n.name}
-                      </TableCell>
-                      <TableCell padding="none">{n.caneat}</TableCell>
-                      <TableCell padding="none">{n.notes}</TableCell>
+      <FirestoreCollection
+        path={path}
+        sort={orderBy+':'+order}
+        render={({ isLoading, data }) => {
+          return (
+            <Paper className={classes.root}>
+              <EnhancedTableToolbar numSelected={selected.length} />
+              <div className={classes.tableWrapper}>
+                { isLoading && <LinearProgress className={classes.progress} />}
+                <Table className={classes.table} aria-labelledby="tableTitle">
+                  <EnhancedTableHead
+                    columnData={columnData}
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={this.handleSelectAllClick}
+                    onRequestSort={this.handleRequestSort}
+                    rowCount={data.length}
+                  />
+                  
+                  <TableBody>
+                  { isLoading ? (
+                    <TableRow>
+                      {columnData.map(column => {
+                        return (
+                          <TableCell
+                            key={column.id}
+                            numeric={column.numeric}
+                            padding={column.disablePadding ? 'none' : 'default'}
+                            sortDirection={orderBy === column.id ? order : false}
+                          >
+                          </TableCell>
+                        );
+                      }, this)}
                     </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <TablePagination
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
-      </Paper>
+                    ) : (
+                      data.sort(getSorting(order, orderBy))
+                        // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map(n => {
+                          const isSelected = this.isSelected(n.id);
+                          return (
+                            <TableRow
+                              hover
+                              onClick={event => this.handleClick(event, n.id)}
+                              role="checkbox"
+                              aria-checked={isSelected}
+                              tabIndex={-1}
+                              key={n.id}
+                              selected={isSelected}
+                            >
+                              <TableCell padding="checkbox">
+                                <Checkbox checked={isSelected} />
+                              </TableCell>
+
+                              {columnData.map(column => {
+                                return (
+                                  <TableCell
+                                    key={column.id}
+                                    numeric={column.numeric}
+                                    padding={column.disablePadding ? 'none' : 'default'}
+                                    sortDirection={orderBy === column.id ? order : false}
+                                  >
+                                    {n[column.id]}
+                                  </TableCell>
+                                );
+                              }, this)}
+                            </TableRow>
+                          );
+                        })
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+              {/* <TablePagination
+                component="div"
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                backIconButtonProps={{
+                  'aria-label': 'Previous Page',
+                }}
+                nextIconButtonProps={{
+                  'aria-label': 'Next Page',
+                }}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              /> */}
+            </Paper>
+          );
+        }}
+      />
     );
   }
 }

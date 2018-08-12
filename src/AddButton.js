@@ -14,7 +14,7 @@ import FormControl from '@material-ui/core/FormControl';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import firestore from "./firestore";
+import { withFirestore } from 'react-firestore';
 
 const styles = theme => ({
   fab: {
@@ -51,6 +51,8 @@ class AddButton extends React.Component {
   };
 
   handleAdd = () => {
+    const { firestore } = this.props;
+    
     console.log(this.state);
 
     var newFooditem = {
@@ -119,4 +121,4 @@ AddButton.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(AddButton);
+export default withFirestore(withStyles(styles)(AddButton));

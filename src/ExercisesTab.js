@@ -7,17 +7,7 @@ const styles = theme => ({
 });
 
 class ExercisesTab extends React.Component {
-  state = {
-
-  };
-
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-
   render() {
-    const { classes } = this.props;
-    const { selectedTab } = this.state;
     return (
       <React.Fragment>
           HELLO EXERCISES TAB

@@ -25,19 +25,13 @@ function getSorting(order, orderBy) {
     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
 }
 
-const columnData = [
-    { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-    { id: 'caneat', numeric: false, disablePadding: true, label: 'Can he eat?' },
-    { id: 'note', numeric: false, disablePadding: true, label: 'Notes' },
-];
-
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData } = this.props;
 
     return (
       <TableHead>

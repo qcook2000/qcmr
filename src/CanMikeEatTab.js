@@ -11,12 +11,18 @@ function createData(name, caneat, notes) {
   return { id, name, caneat, notes };
 };
 
-let data = [
+const data = [
   createData('Frozen yoghurt', 'Yes!', ''),
   createData('Ice cream sandwich', 'No!', 'You trying to kill him?'),
   createData('Eclair', 'Yes!', ''),
   createData('Cupcake', 'Yes!', 'Everyone loves cupcakes.'),
   createData('Gingerbread', 'Yes!', ''),
+];
+
+const columnData = [
+  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'caneat', numeric: false, disablePadding: true, label: 'Can he eat?' },
+  { id: 'note', numeric: false, disablePadding: true, label: 'Notes' },
 ];
 
 const styles = theme => ({
@@ -28,6 +34,8 @@ class CanMikeEatTab extends React.Component {
 
   };
 
+  
+
   handleChange = (event, value) => {
     this.setState({ value });
   };
@@ -37,7 +45,7 @@ class CanMikeEatTab extends React.Component {
     const { selectedTab } = this.state;
     return (
       <React.Fragment>
-          <EhancedTable items={data}/>
+          <EhancedTable items={data} columnData={columnData}/>
           <AddButton />
       </React.Fragment>
     );

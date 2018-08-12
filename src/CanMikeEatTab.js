@@ -17,9 +17,10 @@ const styles = theme => ({
 
 class CanMikeEatTab extends React.Component {
   render() {
+    const { eatTabFilter } = this.props;
     return (
       <React.Fragment>
-          <EnhancedTable path='food-items' columnData={columnData} filter={['category', '==', 'Protein']}/>
+          <EnhancedTable path='food-items' columnData={columnData} filter={eatTabFilter}/>
           <AddButton />
       </React.Fragment>
     );

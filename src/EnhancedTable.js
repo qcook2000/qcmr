@@ -247,7 +247,7 @@ class EnhancedTable extends React.Component {
       <FirestoreCollection
         path={path}
         sort={orderBy+':'+order}
-        filter={filter}
+        filter={filter && filter.length == 3 ? filter : null}
         render={({ isLoading, data }) => {
           return (
             <Paper className={classes.root}>

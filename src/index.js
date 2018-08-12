@@ -14,6 +14,7 @@ import ProfileTab from './ProfileTab';
 import firebase from "@firebase/app";
 import "@firebase/firestore";
 import { FirestoreProvider } from 'react-firestore';
+import PubSub from 'pubsub-js';
 
 var config = {
     apiKey: "AIzaSyAcr_Yi9iV9cg7v9QLGfm3ugoorGdTtRo8",
@@ -34,12 +35,26 @@ class App extends React.Component {
     selectedTab: 3,
   };
 
+  componentDidMount() {
+    PubSub.subscribe('tabChange', this.tabChangeSubReceived);
+  }
+  
+
+  tabChangeSubReceived = (msg, data) => {
+      console.log( msg, data)
+      this.setState({ selectedTab: data.tabIndex })
+      if (data.tabIndex == 0) {
+        console.log(data);
+        this.setState({ eatTabFilter: data.eatTabFilter});
+      }
+  }
+
   tabChange = (event, value) => {
     this.setState({ selectedTab: value });
   };
 
   render() {
-    const { selectedTab } = this.state;
+    const { selectedTab, eatTabFilter } = this.state;
     return (
       <FirestoreProvider firebase={firebase}>
         <CssBaseline />
@@ -51,7 +66,7 @@ class App extends React.Component {
             <Tab label="Profile" />
           </Tabs>
         </AppBar>
-        {selectedTab === 0 && <CanMikeEatTab />}
+        {selectedTab === 0 && <CanMikeEatTab eatTabFilter={eatTabFilter}/>}
         {selectedTab === 1 && <ExercisesTab />}
         {selectedTab === 2 && <WorkoutsTab />}
         {selectedTab === 3 && <ProfileTab />}

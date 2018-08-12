@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { withFirestore  } from 'react-firestore';
 import ReactChartkick, { BarChart } from 'react-chartkick';
 import Chart from 'chart.js';
+import PubSub from 'pubsub-js';
 
 ReactChartkick.addAdapter(Chart);
 
@@ -42,11 +43,16 @@ class CoolGraph extends React.Component {
         });
     }
 
+    categoryClicked = () => {
+        PubSub.publish('tabChange', {tabIndex: 0, eatTabFilter: ['category', '==', 'Fruit']});
+    }
+
   render() {
     const { classes } = this.props;
     return (
       <React.Fragment>
         <BarChart data={this.state.chartData} />
+        <a onClick={this.categoryClicked}>hello I am not a chart but I'm in a chart area thing don't know why </a>
       </React.Fragment>
     );
   }

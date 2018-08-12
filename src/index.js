@@ -2,38 +2,46 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './index.css';
-import ButtonAppBar from './ButtonAppBar';
-import AddButton from './AddButton';
-import EhancedTable from './EnhancedTable';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+
+import CanMikeEatTab from './CanMikeEatTab';
+import ExercisesTab from './ExercisesTab';
+import WorkoutsTab from './WorkoutsTab';
+import ProfileTab from './ProfileTab';
 
 
-let id = 0;
-function createData(name, caneat, notes) {
-  id += 1;
-  return { id, name, caneat, notes };
-}
+class App extends React.Component {
+  state = {
+    selectedTab: 0,
+  };
 
-const data = [
-  createData('Frozen yoghurt', 'Yes!', ''),
-  createData('Ice cream sandwich', 'No!', 'You trying to kill him?'),
-  createData('Eclair', 'Yes!', ''),
-  createData('Cupcake', 'Yes!', 'Everyone loves cupcakes.'),
-  createData('Gingerbread', 'Yes!', ''),
-];
+  tabChange = (event, value) => {
+    this.setState({ selectedTab: value });
+  };
 
-function App() {
+  render() {
+    const { classes } = this.props;
+    const { selectedTab } = this.state;
     return (
-        <React.Fragment>
-            <CssBaseline />
-            <ButtonAppBar />
-            <EhancedTable items={data}/>
-            <AddButton />
-        </React.Fragment>
+      <React.Fragment>
+          <CssBaseline />
+          <AppBar position="sticky">
+            <Tabs value={selectedTab} onChange={this.tabChange} name="selectedTab">
+              <Tab label="Can Mike Eat?" />
+              <Tab label="Exercises" />
+              <Tab label="Workouts" />
+              <Tab label="Profile" />
+            </Tabs>
+          </AppBar>
+          {selectedTab === 0 && <CanMikeEatTab />}
+          {selectedTab === 1 && <ExercisesTab />}
+          {selectedTab === 2 && <WorkoutsTab />}
+          {selectedTab === 3 && <ProfileTab />}
+      </React.Fragment>
     );
+  }
 }
-
 
 ReactDOM.render(<App />, document.getElementById('root'));
-  
-
-  

@@ -48,7 +48,6 @@ class CoolGraph extends React.Component {
     }
 
   render() {
-    const { classes } = this.props;
     return (
       <React.Fragment>
         <BarChart data={this.state.chartData} />

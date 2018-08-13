@@ -43,7 +43,7 @@ class App extends React.Component {
   tabChangeSubReceived = (msg, data) => {
       console.log( msg, data)
       this.setState({ selectedTab: data.tabIndex })
-      if (data.tabIndex == 0) {
+      if (data.tabIndex === 0) {
         console.log(data);
         this.setState({ eatTabFilter: data.eatTabFilter});
       }

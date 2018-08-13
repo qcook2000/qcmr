@@ -5,11 +5,26 @@ import { withFirestore  } from 'react-firestore';
 import ReactChartkick, { BarChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import PubSub from 'pubsub-js';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import '../node_modules/react-vis/dist/style.css';
+import {
+    XYPlot,
+    XAxis,
+    YAxis,
+    VerticalGridLines,
+    HorizontalBarSeries
+} from 'react-vis';
 
 ReactChartkick.addAdapter(Chart);
 
 const styles = theme => ({
-  
+    root: {
+        ...theme.mixins.gutters(),
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2,
+        margin: theme.spacing.unit * 2,
+      },
 });
 
 class CoolGraph extends React.Component {
@@ -17,43 +32,84 @@ class CoolGraph extends React.Component {
         super(props);
 
         this.state = {
-            chartData: {}
+            rawDatabase: {},
+            dbRecords: [],
+            reactvisGraphData: []
         };
-        
-        this.getAllRecords();
+        this.rawDatabase = {};
+        this.dbRecords = [];  
+
+        this.getRawDatabase();
     }
 
-
-    getAllRecords = () => {
+    getRawDatabase = () => {
         const { firestore } = this.props;
         var allFoodItems = firestore.collection('food-items')
-        var chartDataTemp = {};
         allFoodItems.get().then(collection => {
-            collection.forEach(element => {
-                var cat = element.data().category
-                console.log(cat)
-                if (cat in chartDataTemp) {
-                    chartDataTemp[cat] = chartDataTemp[cat] + 1;
-                } else {
-                    chartDataTemp[cat] = 1;
-                }
-            });
-            console.log(chartDataTemp);
-            this.setState({ chartData: chartDataTemp });
-        });
+            this.rawDatabase = collection;
+        })
+        .then(this.transformData)  
     }
 
-    categoryClicked = () => {
-        PubSub.publish('tabChange', {tabIndex: 0, eatTabFilter: ['category', '==', 'Fruit']});
+    transformData = () => {
+        //Converts the raw Firestore collection to an array of records.
+        this.rawDatabase.forEach(element => {
+            this.dbRecords.push(element.data());
+        });
+        var categoriesSorted = this.sortedDict(this.getCategories());
+        this.setState ({reactvisGraphData: categoriesSorted});
+    }
+
+    getCategories = () => {
+        //Returns a dictionary of categories with counts of given category
+        var categoryDict = {}; 
+        this.dbRecords.forEach(element => {
+            var category = element.category;
+            if (category in categoryDict) {
+                categoryDict[category] = categoryDict[category] + 1;
+            } else {
+                categoryDict[category] = 1;
+            }
+        });
+        return categoryDict;
+    }
+
+    sortedDict = (dictToSort) => {
+        //Sorts a given dictionary based on dict values.
+        //Returns react-vis readable graph data with labels
+        var sortedData = Object.keys(dictToSort).map(function(key) {
+            return [key, dictToSort[key]];
+        });
+        sortedData.sort(function(first, second) {
+            return first[1] - second[1]; //sort min to max. reverse to sort max to min.
+        });
+        //Store the data into a react-vis readable graph data with labels
+        for (var i = 0; i < sortedData.length; i++) {
+            sortedData[i] = { x: sortedData[i][1], y:i, label: sortedData[i][0] };
+        }
+        return sortedData;
+    }
+
+    graphMarkClicked = (datapoint, event) => {
+        PubSub.publish('tabChange', {tabIndex: 0, eatTabFilter: ['category', '==', datapoint.label]});
     }
 
   render() {
     const { classes } = this.props;
     return (
-      <React.Fragment>
-        <BarChart data={this.state.chartData} />
-        <a onClick={this.categoryClicked}>hello I am not a chart but I'm in a chart area thing don't know why </a>
-      </React.Fragment>
+      <Paper className={classes.root}>
+        <Typography variant='title'>The Most Added Items</Typography>
+        <XYPlot margin={{left: 100}} height={300} width= {700}>
+            <VerticalGridLines />
+            <XAxis />
+            <YAxis tickFormat={v => (
+                this.state.reactvisGraphData[v] ? this.state.reactvisGraphData[v].label : null
+                )} />
+          <HorizontalBarSeries
+            data={this.state.reactvisGraphData}
+            onValueClick={this.graphMarkClicked}/>
+        </XYPlot>
+      </Paper>
     );
   }
 }

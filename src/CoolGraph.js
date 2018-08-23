@@ -13,7 +13,8 @@ import {
     XAxis,
     YAxis,
     VerticalGridLines,
-    HorizontalBarSeries
+    HorizontalBarSeries,
+    RadialChart
 } from 'react-vis';
 
 ReactChartkick.addAdapter(Chart);
@@ -27,6 +28,23 @@ const styles = theme => ({
       },
 });
 
+const myData = [
+    {angle: 7, radius: 2, label: 'Carrots', innerRadius: 0},
+    {angle: 7, radius: 5, label: 'blue',innerRadius: 3},
+    {angle: 7, radius: 2, label: 'red',innerRadius: 0},
+    {angle: 7, radius: 5, label: 'green',innerRadius: 3},
+    {angle: 7, radius: 2, label: 'o-range',innerRadius: 0},
+    {angle: 7, radius: 5, label: 'purps',innerRadius: 3}
+]
+const myDatadata = [
+    {angle: 7, radius: 4, label: 'Carrots', innerRadius: 3},
+    {angle: 7, radius: 4, label: 'blue',innerRadius: 3},
+    {angle: 7, radius: 4, label: 'red',innerRadius: 3},
+    {angle: 7, radius: 4, label: 'green',innerRadius: 3},
+    {angle: 7, radius: 4, label: 'o-range',innerRadius: 3},
+    {angle: 7, radius: 4, label: 'purps',innerRadius: 3}
+]
+
 class CoolGraph extends React.Component {
     constructor(props) {
         super(props);
@@ -34,13 +52,20 @@ class CoolGraph extends React.Component {
         this.state = {
             rawDatabase: {},
             dbRecords: [],
-            reactvisGraphData: []
+            reactvisGraphData: [],
+            radialData: myDatadata
+
         };
         this.rawDatabase = {};
         this.dbRecords = [];  
 
         this.getRawDatabase();
+        setTimeout(e => {
+            this.setState({radialData: myData});
+        } , 2000)
     }
+
+
 
     getRawDatabase = () => {
         const { firestore } = this.props;
@@ -56,8 +81,18 @@ class CoolGraph extends React.Component {
         this.rawDatabase.forEach(element => {
             this.dbRecords.push(element.data());
         });
-        var categoriesSorted = this.sortedDict(this.getCategories());
-        this.setState ({reactvisGraphData: categoriesSorted});
+        var chartStates = this.sortedAndEmptyDict(this.getCategories());
+        var categoriesZero = chartStates[0];
+        // console.log(categoriesZero);
+        var categoriesSorted = chartStates[1];
+        // console.log(categoriesSorted);
+        
+        this.setState ({reactvisGraphData: categoriesZero})
+        console.log(this.state.reactvisGraphData);
+        setTimeout(e => {
+            this.setState({reactvisGraphData: categoriesSorted});
+            console.log(this.state.reactvisGraphData);
+        } , 5000)
     }
 
     getCategories = () => {
@@ -74,7 +109,7 @@ class CoolGraph extends React.Component {
         return categoryDict;
     }
 
-    sortedDict = (dictToSort) => {
+    sortedAndEmptyDict = (dictToSort) => {
         //Sorts a given dictionary based on dict values.
         //Returns react-vis readable graph data with labels
         var sortedData = Object.keys(dictToSort).map(function(key) {
@@ -84,10 +119,16 @@ class CoolGraph extends React.Component {
             return first[1] - second[1]; //sort min to max. reverse to sort max to min.
         });
         //Store the data into a react-vis readable graph data with labels
+        var sortedDataEmpty = [];
+        var max = sortedData[0][1];
         for (var i = 0; i < sortedData.length; i++) {
-            sortedData[i] = { x: sortedData[i][1], y:i, label: sortedData[i][0] };
-        }
-        return sortedData;
+            sortedData[i] = { x: sortedData[i][1], y:i, label: sortedData[i][0]};
+            sortedDataEmpty[i] = {x: 0, y:i, label: sortedData[i].label };
+            max = sortedData[i].x > max ? sortedData[i].x : max;
+        };
+        sortedDataEmpty.push({x: max, y: 0, label: 'hello'})
+        var sortedAndEmptyData = [sortedDataEmpty, sortedData];
+        return sortedAndEmptyData;
     }
 
     graphMarkClicked = (datapoint, event) => {
@@ -101,14 +142,29 @@ class CoolGraph extends React.Component {
         <Typography variant='title'>The Most Added Items</Typography>
         <XYPlot margin={{left: 100}} height={300} width= {700}>
             <VerticalGridLines />
-            <XAxis />
+            <XAxis tickTotal={10}/>
             <YAxis tickFormat={v => (
                 this.state.reactvisGraphData[v] ? this.state.reactvisGraphData[v].label : null
                 )} />
           <HorizontalBarSeries
             data={this.state.reactvisGraphData}
-            onValueClick={this.graphMarkClicked}/>
+            opacity={1}
+            onValueClick={this.graphMarkClicked}
+            animation/>
         </XYPlot>
+        <RadialChart
+            data={myData}
+            width={300}
+            height={300}
+            animation
+            />
+        <RadialChart
+            data={this.state.radialData}
+            width={300}
+            height={300}
+            animation
+            />
+            
       </Paper>
     );
   }

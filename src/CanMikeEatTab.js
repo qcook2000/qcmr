@@ -1,28 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import EnhancedTable from './EnhancedTable';
-
-const columnData = [
-    { id: 'name', label: 'Name', defaultSort: true},
-    { id: 'category', label: 'Category' },
-    { id: 'updated', label: 'Updated', type: EnhancedTable.DataTypes.Date },
-    { id: 'caneat', label: 'Can he eat?', autoCompleteOptions: [
-      "Yes!", "No!", "Yes... sorta...", "???", "No! He's allergic!", "Are you trying to KILL him???",
-    ]},
-    { id: 'notes', label: 'Notes', type: EnhancedTable.DataTypes.LongString },
-];
+import FireStoreTablePage from './FireStoreTablePage';
+import FU from './FirestoreUtils';
 
 const styles = theme => ({
   
 });
 
+const columns = [
+  { name: 'Name',
+    id: 'name',
+    options: {filter: false}
+  },{ 
+    name: 'Category',
+    id: 'category',
+  },{
+    name: 'Updated',
+    id: 'updated',
+    type: FU.Types.Date,
+    options: { filter: false, customBodyRender: FU.timestampRender }
+  },{
+    name: 'Can he eat?',
+    id: 'caneat',
+    autoCompleteOptions: [
+      'Yes!', 'No!', 'Yes... sorta...', '???', 'No! He\'s allergic!', 'Are you trying to KILL him???',
+    ],
+  },{
+    name: 'Notes',
+    id: 'notes',
+    type: FU.Types.LongString,
+    options: { filter: false }
+  },
+];
+
+const settings = {
+  path: 'food-items',
+  listTitle: 'Food Items',
+  drawerItemName: 'Food Item',
+}
+
 class CanMikeEatTab extends React.Component {
   render() {
-    const { eatTabFilter } = this.props;
     return (
       <React.Fragment>
-        <EnhancedTable path='food-items' columnData={columnData} itemName='Food' filter={eatTabFilter} orderBy='name'/>
+          <FireStoreTablePage columns={columns} settings={settings}/>
       </React.Fragment>
     );
   }
@@ -33,4 +55,3 @@ CanMikeEatTab.propTypes = {
 };
 
 export default withStyles(styles)(CanMikeEatTab);
-

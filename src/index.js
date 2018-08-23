@@ -11,29 +11,21 @@ import ExercisesTab from './ExercisesTab';
 import WorkoutsTab from './WorkoutsTab';
 import ProfileTab from './ProfileTab';
 
-import firebase from "@firebase/app";
-import "@firebase/firestore";
-import { FirestoreProvider } from 'react-firestore';
+import FU from './FirestoreUtils';
 import PubSub from 'pubsub-js';
-
-var config = {
-    apiKey: "AIzaSyAcr_Yi9iV9cg7v9QLGfm3ugoorGdTtRo8",
-    authDomain: "canmikeeatthis.firebaseapp.com",
-    databaseURL: "https://canmikeeatthis.firebaseio.com",
-    projectId: "canmikeeatthis",
-    storageBucket: "canmikeeatthis.appspot.com",
-    messagingSenderId: "860540540828"
-};
-firebase.initializeApp(config);
-const firestore = firebase.firestore();
-const settings = {timestampsInSnapshots: true};
-firestore.settings(settings);
+import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import TodoTab from './TodoTab';
 
 
 class App extends React.Component {
-  state = {
-    selectedTab: 0,
-  };
+  constructor(props) {
+    super(props);
+    FU.init();
+    this.state = {
+      selectedTab: 0,
+    };
+  }
 
   componentDidMount() {
     PubSub.subscribe('tabChange', this.tabChangeSubReceived);
@@ -56,21 +48,25 @@ class App extends React.Component {
   render() {
     const { selectedTab, eatTabFilter } = this.state;
     return (
-      <FirestoreProvider firebase={firebase}>
-        <CssBaseline />
-        <AppBar position="sticky">
-          <Tabs value={selectedTab} onChange={this.tabChange} name="selectedTab">
-            <Tab label="Can Mike Eat?" />
-            <Tab label="Exercises" />
-            <Tab label="Workouts" />
-            <Tab label="Profile" />
-          </Tabs>
-        </AppBar>
-        {selectedTab === 0 && <CanMikeEatTab eatTabFilter={eatTabFilter}/>}
-        {selectedTab === 1 && <ExercisesTab />}
-        {selectedTab === 2 && <WorkoutsTab />}
-        {selectedTab === 3 && <ProfileTab />}
-      </FirestoreProvider>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <React.Fragment>
+          <CssBaseline />
+          <AppBar position="sticky">
+            <Tabs value={selectedTab} onChange={this.tabChange} name="selectedTab">
+              <Tab label="Can Mike Eat?" />
+              <Tab label="Exercises" />
+              <Tab label="Workouts" />
+              <Tab label="Profile" />
+              <Tab label="Todo" />
+            </Tabs>
+          </AppBar>
+          {selectedTab === 0 && <CanMikeEatTab eatTabFilter={eatTabFilter}/>}
+          {selectedTab === 1 && <ExercisesTab />}
+          {selectedTab === 2 && <WorkoutsTab />}
+          {selectedTab === 3 && <ProfileTab />}
+          {selectedTab === 4 && <TodoTab />}
+        </React.Fragment>
+      </MuiPickersUtilsProvider>
     );
   }
 }

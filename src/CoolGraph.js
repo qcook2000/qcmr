@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { withFirestore  } from 'react-firestore';
-import ReactChartkick, { BarChart } from 'react-chartkick';
+import ReactChartkick from 'react-chartkick';
 import Chart from 'chart.js';
 import PubSub from 'pubsub-js';
 import Paper from '@material-ui/core/Paper';

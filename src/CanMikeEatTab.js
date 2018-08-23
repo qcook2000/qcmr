@@ -1,27 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AddButton from './AddButton';
-import EnhancedTable from './EnhancedTable';
-
-const columnData = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'category', numeric: false, disablePadding: true, label: 'Category' },
-  { id: 'caneat', numeric: false, disablePadding: true, label: 'Can he eat?' },
-  { id: 'notes', numeric: false, disablePadding: true, label: 'Notes' },
-];
+import FireStoreTablePage from './FireStoreTablePage';
+import FU from './FirestoreUtils';
 
 const styles = theme => ({
   
 });
 
+const columns = [
+  { name: 'Name',
+    id: 'name',
+    options: {filter: false}
+  },{ 
+    name: 'Category',
+    id: 'category',
+  },{
+    name: 'Updated',
+    id: 'updated',
+    type: FU.Types.Date,
+    options: { filter: false, customBodyRender: FU.timestampRender }
+  },{
+    name: 'Can he eat?',
+    id: 'caneat',
+    autoCompleteOptions: [
+      'Yes!', 'No!', 'Yes... sorta...', '???', 'No! He\'s allergic!', 'Are you trying to KILL him???',
+    ],
+  },{
+    name: 'Notes',
+    id: 'notes',
+    type: FU.Types.LongString,
+    options: { filter: false }
+  },
+];
+
+const settings = {
+  path: 'food-items',
+  listTitle: 'Food Items',
+  drawerItemName: 'Food Item',
+}
+
 class CanMikeEatTab extends React.Component {
   render() {
-    const { eatTabFilter } = this.props;
     return (
       <React.Fragment>
-          <EnhancedTable path='food-items' columnData={columnData} filter={eatTabFilter}/>
-          <AddButton />
+          <FireStoreTablePage columns={columns} settings={settings}/>
       </React.Fragment>
     );
   }
@@ -32,4 +55,3 @@ CanMikeEatTab.propTypes = {
 };
 
 export default withStyles(styles)(CanMikeEatTab);
-

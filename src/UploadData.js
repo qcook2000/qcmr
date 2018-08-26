@@ -5,582 +5,207 @@ import "@firebase/firestore";
 
 
 const data = [
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "Q",
-		"Weight": 145,
-		"Reps": 10,
-		"ExerciseNumber": 1
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "Q",
-		"Weight": 165,
-		"Reps": 10,
-		"ExerciseNumber": 2
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "Q",
-		"Weight": 165,
-		"Reps": 10,
-		"ExerciseNumber": 3
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 115,
-		"Reps": 10,
-		"ExerciseNumber": 4
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 115,
-		"Reps": 10,
-		"ExerciseNumber": 5
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 115,
-		"Reps": 10,
-		"ExerciseNumber": 6
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 50,
-		"Reps": 10,
-		"ExerciseNumber": 7
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 70,
-		"Reps": 10,
-		"ExerciseNumber": 8
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 70,
-		"Reps": 10,
-		"ExerciseNumber": 9
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Shoulder press",
-		"Person": "Q",
-		"Weight": 40,
-		"Reps": 10,
-		"ExerciseNumber": 10
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Shoulder press",
-		"Person": "Q",
-		"Weight": 40,
-		"Reps": 10,
-		"ExerciseNumber": 11
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Shoulder press",
-		"Person": "Q",
-		"Weight": 40,
-		"Reps": 10,
-		"ExerciseNumber": 12
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 115,
-		"Reps": 10,
-		"ExerciseNumber": 13
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 115,
-		"Reps": 10,
-		"ExerciseNumber": 14
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 115,
-		"Reps": 10,
-		"ExerciseNumber": 15
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 70,
-		"Reps": 10,
-		"ExerciseNumber": 16
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 70,
-		"Reps": 10,
-		"ExerciseNumber": 17
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 80,
-		"Reps": 10,
-		"ExerciseNumber": 18
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Shoulder press",
-		"Person": "Q",
-		"Weight": 50,
-		"Reps": 10,
-		"ExerciseNumber": 19
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Shoulder press",
-		"Person": "Q",
-		"Weight": 50,
-		"Reps": 10,
-		"ExerciseNumber": 20
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Shoulder press",
-		"Person": "Q",
-		"Weight": 50,
-		"Reps": 10,
-		"ExerciseNumber": 21
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Leg Press",
-		"Person": "Q",
-		"Weight": 360,
-		"Reps": 10,
-		"ExerciseNumber": 22
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Leg Press",
-		"Person": "Q",
-		"Weight": 360,
-		"Reps": 10,
-		"ExerciseNumber": 23
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Leg Press",
-		"Person": "Q",
-		"Weight": 360,
-		"Reps": 10,
-		"ExerciseNumber": 24
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Shoulder Press",
-		"Person": "Q",
-		"Weight": 50,
-		"Reps": 15,
-		"ExerciseNumber": 25
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Shoulder Press",
-		"Person": "Q",
-		"Weight": 60,
-		"Reps": 10,
-		"ExerciseNumber": 26
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Shoulder Press",
-		"Person": "Q",
-		"Weight": 60,
-		"Reps": 10,
-		"ExerciseNumber": 27
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 80,
-		"Reps": 10,
-		"ExerciseNumber": 28
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 80,
-		"Reps": 10,
-		"ExerciseNumber": 29
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bent over row",
-		"Person": "Q",
-		"Weight": 80,
-		"Reps": 10,
-		"ExerciseNumber": 30
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 125,
-		"Reps": 10,
-		"ExerciseNumber": 31
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 125,
-		"Reps": 10,
-		"ExerciseNumber": 32
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bench",
-		"Person": "Q",
-		"Weight": 125,
-		"Reps": 7,
-		"ExerciseNumber": 33
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "Q",
-		"Weight": 185,
-		"Reps": 10,
-		"ExerciseNumber": 34
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "Q",
-		"Weight": 185,
-		"Reps": 10,
-		"ExerciseNumber": 35
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "Q",
-		"Weight": 185,
-		"Reps": 10,
-		"ExerciseNumber": 36
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 10,
-		"ExerciseNumber": 1
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 15,
-		"ExerciseNumber": 2
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 10,
-		"ExerciseNumber": 3
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 10,
-		"ExerciseNumber": 4
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 10,
-		"ExerciseNumber": 5
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 10,
-		"ExerciseNumber": 6
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 20,
-		"Reps": 10,
-		"ExerciseNumber": 7
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 20,
-		"Reps": 10,
-		"ExerciseNumber": 8
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 20,
-		"Reps": 10,
-		"ExerciseNumber": 9
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Shoulder press",
-		"Person": "C",
-		"Weight": 20,
-		"Reps": 10,
-		"ExerciseNumber": 10
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Shoulder press",
-		"Person": "C",
-		"Weight": 15,
-		"Reps": 10,
-		"ExerciseNumber": 11
-	},
-	{
-		"Date": "8/10/2018",
-		"Exercise": "Shoulder press",
-		"Person": "C",
-		"Weight": 15,
-		"Reps": 10,
-		"ExerciseNumber": 12
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 65,
-		"Reps": 10,
-		"ExerciseNumber": 13
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 10,
-		"ExerciseNumber": 14
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 95,
-		"Reps": 10,
-		"ExerciseNumber": 15
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 50,
-		"Reps": 10,
-		"ExerciseNumber": 16
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 50,
-		"Reps": 10,
-		"ExerciseNumber": 17
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 50,
-		"Reps": 10,
-		"ExerciseNumber": 18
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Shoulder press",
-		"Person": "C",
-		"Weight": 30,
-		"Reps": 10,
-		"ExerciseNumber": 19
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Shoulder press",
-		"Person": "C",
-		"Weight": 30,
-		"Reps": 10,
-		"ExerciseNumber": 20
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Shoulder press",
-		"Person": "C",
-		"Weight": 30,
-		"Reps": 10,
-		"ExerciseNumber": 21
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Leg Press",
-		"Person": "C",
-		"Weight": 160,
-		"Reps": 10,
-		"ExerciseNumber": 22
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Leg Press",
-		"Person": "C",
-		"Weight": 160,
-		"Reps": 10,
-		"ExerciseNumber": 23
-	},
-	{
-		"Date": "8/14/2018",
-		"Exercise": "Leg Press",
-		"Person": "C",
-		"Weight": 160,
-		"Reps": 10,
-		"ExerciseNumber": 24
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Shoulder Press",
-		"Person": "C",
-		"Weight": 40,
-		"Reps": 10,
-		"ExerciseNumber": 25
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Shoulder Press",
-		"Person": "C",
-		"Weight": 40,
-		"Reps": 10,
-		"ExerciseNumber": 26
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Shoulder Press",
-		"Person": "C",
-		"Weight": 40,
-		"Reps": 10,
-		"ExerciseNumber": 27
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 60,
-		"Reps": 10,
-		"ExerciseNumber": 28
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 60,
-		"Reps": 10,
-		"ExerciseNumber": 29
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bent over row",
-		"Person": "C",
-		"Weight": 60,
-		"Reps": 10,
-		"ExerciseNumber": 30
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 105,
-		"Reps": 10,
-		"ExerciseNumber": 31
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 105,
-		"Reps": 9,
-		"ExerciseNumber": 32
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Bench",
-		"Person": "C",
-		"Weight": 105,
-		"Reps": 8,
-		"ExerciseNumber": 33
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "C",
-		"Weight": 105,
-		"Reps": 10,
-		"ExerciseNumber": 34
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "C",
-		"Weight": 105,
-		"Reps": 10,
-		"ExerciseNumber": 35
-	},
-	{
-		"Date": "8/20/2018",
-		"Exercise": "Hex deadlift",
-		"Person": "C",
-		"Weight": 105,
-		"Reps": 10,
-		"ExerciseNumber": 36
-	}
+  {
+    "name": "Ball Slams"
+  },
+  {
+    "name": "Bench press"
+  },
+  {
+    "name": "Bench Press w/band 4.2.1"
+  },
+  {
+    "name": "Bench Press w/Grey band"
+  },
+  {
+    "name": "Bent over row"
+  },
+  {
+    "name": "Bosu Ball Push-Ups"
+  },
+  {
+    "name": "Cables 4"
+  },
+  {
+    "name": "Cables: High"
+  },
+  {
+    "name": "Cables: Low"
+  },
+  {
+    "name": "Cables: Medium"
+  },
+  {
+    "name": "Circuit- Red Platform Burpees"
+  },
+  {
+    "name": "Double Plate Squeze Up/Down"
+  },
+  {
+    "name": "Dumbbell Tricep Skullcrushers"
+  },
+  {
+    "name": "Dumbell Overhead Chest (inward hand torque)"
+  },
+  {
+    "name": "Farmer's Carry"
+  },
+  {
+    "name": "Foam Roll - Calves"
+  },
+  {
+    "name": "Frog Squats/Bear Crawl Circuit"
+  },
+  {
+    "name": "Front/Side Shoulder raises"
+  },
+  {
+    "name": "Glute Bridge"
+  },
+  {
+    "name": "Glute Bridge 1 leg"
+  },
+  {
+    "name": "Goblet Squats"
+  },
+  {
+    "name": "Hex Bar Deadlift"
+  },
+  {
+    "name": "Hex Deadlift"
+  },
+  {
+    "name": "Hex deadlift"
+  },
+  {
+    "name": "Hex Deadlift 4"
+  },
+  {
+    "name": "Ice Skaters"
+  },
+  {
+    "name": "Incline Bench Press"
+  },
+  {
+    "name": "Kettlebell Swings"
+  },
+  {
+    "name": "Kevlar Ball Left/Right/Down"
+  },
+  {
+    "name": "Kevlar Ball Side Slams"
+  },
+  {
+    "name": "Lawnmowers"
+  },
+  {
+    "name": "Laying Flys"
+  },
+  {
+    "name": "Left"
+  },
+  {
+    "name": "Leg Press"
+  },
+  {
+    "name": "Lunges (then with rotation)"
+  },
+  {
+    "name": "Overhead Press"
+  },
+  {
+    "name": "Planks (navel through spine)"
+  },
+  {
+    "name": "Powerball single arm shoulder raise"
+  },
+  {
+    "name": "Push-Ups"
+  },
+  {
+    "name": "PVR Rotational Throw"
+  },
+  {
+    "name": "Red Platform Arms in"
+  },
+  {
+    "name": "Rolling Ball Push-Ups"
+  },
+  {
+    "name": "Romanian Deadlift"
+  },
+  {
+    "name": "Shoulder press"
+  },
+  {
+    "name": "Side crunches"
+  },
+  {
+    "name": "Sled Workout"
+  },
+  {
+    "name": "Squat/Curl/Press"
+  },
+  {
+    "name": "Squat/Press"
+  },
+  {
+    "name": "Squats"
+  },
+  {
+    "name": "Squeeze Press"
+  },
+  {
+    "name": "Stability Ball Back Cobras"
+  },
+  {
+    "name": "Stability Ball Back Extension"
+  },
+  {
+    "name": "Stability Ball Chest Press"
+  },
+  {
+    "name": "Stability Ball Chest Press 1 arm"
+  },
+  {
+    "name": "Stability Ball Crunches"
+  },
+  {
+    "name": "Stability Ball Glute Bridge"
+  },
+  {
+    "name": "Stability Ball Shoulder Press 1 Arm"
+  },
+  {
+    "name": "Stability Ball Squat/Curl/Press"
+  },
+  {
+    "name": "Standing off box (red)"
+  },
+  {
+    "name": "Static Stretch - Couch"
+  },
+  {
+    "name": "Step-Up to Balance"
+  },
+  {
+    "name": "Stick Rotational Lunges"
+  },
+  {
+    "name": "Toe Touches"
+  },
+  {
+    "name": "Toe Touches (with pad) 4"
+  },
+  {
+    "name": "Treadmill - 3 min fast"
+  },
+  {
+    "name": "TRX Row"
+  },
+  {
+    "name": "Weighted Lunges"
+  }
 ]
 
 function uploadData () {
@@ -590,7 +215,7 @@ function uploadData () {
     for(var i = 0; i < data.length; i++) {
         data[i].Date = new Date(data[i].Date)
         // console.log(data[i]);
-        firestore.collection("workout-history").add(data[i]).then(function(response) {
+        firestore.collection("exercises").add(data[i]).then(function(response) {
             console.log("Success!", response);
           }, function(error) {
             console.error("Failed!", error);

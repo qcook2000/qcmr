@@ -1,39 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import MUIDataTable from "mui-datatables";
-
+// import FU from './FirestoreUtils';
+import FireStoreTablePage from './FireStoreTablePage';
+// import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   
 });
 
-
- 
-const columns = ["Name", "Company", "City", "State"];
- 
-const data = [
- ["Joe James", "Test Corp", "Yonkers", "NY"],
- ["John Walsh", "Test Corp", "Hartford", "CT"],
- ["Bob Herm", "Test Corp", "Tampa", "FL"],
- ["James Houston", "Test Corp", "Dallas", "TX"],
+const columns = [
+  {
+    name: 'Name',
+    id: 'name',
+  },
 ];
- 
-const options = {
-  filterType: 'checkbox',
-  responsive: 'scroll'
-};
 
+const settings = {
+  path: 'exercises',
+  listTitle: 'Exercises',
+  drawerItemName: 'Exercise',
+}
 
 class ExercisesTab extends React.Component {
+  
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
   render() {
     return (
-      <MUIDataTable 
-            title={"Employee List"} 
-            data={data} 
-            columns={columns} 
-            options={options} 
-          />
+      <React.Fragment>
+        <FireStoreTablePage columns={columns} settings={settings}/>
+      </React.Fragment>
     );
   }
 }

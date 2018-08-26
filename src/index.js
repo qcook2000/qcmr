@@ -23,7 +23,7 @@ class App extends React.Component {
     super(props);
     FU.init();
     this.state = {
-      selectedTab: 0,
+      selectedTab: 2,
     };
   }
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import FU from './FirestoreUtils';
 import FireStoreTablePage from './FireStoreTablePage';
+import LogSetDialog from './LogSetDialog';
 
 const styles = theme => ({
   
@@ -17,6 +18,8 @@ const columns = [
   },{ 
     name: 'Exercise',
     id: 'Exercise',
+    type: FU.Types.Reference,
+    referenceCollection: 'exercises',
   },{
     name: 'Person',
     id: 'Person',
@@ -28,15 +31,6 @@ const columns = [
     name: 'Reps',
     id: 'Reps',
     options: { filter: false },
-  },{
-    name: 'ExerciseNumber',
-    id: 'ExerciseNumber',
-    options: { filter: false },
-  },{
-    name: 'Power',
-    id: 'Power',
-    type: FU.Types.Calculated,
-    options: { filter: false, customBodyRender: FU.calculatedRender },
   },
 ];
 
@@ -47,15 +41,30 @@ const settings = {
 }
 
 class WorkoutsTab extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      logOpen: false
+    };
+  }
   
   handleChange = (event, value) => {
     this.setState({ value });
   };
 
+  addButtonClicked = () => {
+    this.setState({logOpen: true, logTime: new Date()});
+  };
+
+  handleClose = () => {
+    this.setState({logOpen: false});
+  }
+
   render() {
     return (
       <React.Fragment>
-          <FireStoreTablePage columns={columns} settings={settings}/>
+          <FireStoreTablePage columns={columns} settings={settings} addButtonClicked={this.addButtonClicked}/>
+          <LogSetDialog open={this.state.logOpen} handleClose={this.handleClose} key={this.state.logTime}/>
       </React.Fragment>
     );
   }

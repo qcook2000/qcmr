@@ -23,12 +23,22 @@ FU.timestampFromMoment = (value) => {
   return firebase.firestore.Timestamp.fromDate(value.toDate());
 };
 
+FU.calculatedRender = (value, row) => {
+  console.log(value, row);
+  var value = 'hi'
+  if (row && row.rowData && row.rowData[3] && row.rowData[4]) {
+    value = '' + (row.rowData[3] * row.rowData[4]);
+  }
+  return value;
+}
+
 FU.Types = {
   ShortString: 0,
   LongString: 1,
   Number: 2,
   Date: 3,
-  Boolean: 4
+  Boolean: 4,
+  Calculated: 5
 }
 
 export default FU;

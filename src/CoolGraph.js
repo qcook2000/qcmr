@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { withFirestore  } from 'react-firestore';
+import FU from './FirestoreUtils';
 import ReactChartkick from 'react-chartkick';
 import Chart from 'chart.js';
 import PubSub from 'pubsub-js';
@@ -68,8 +68,7 @@ class CoolGraph extends React.Component {
 
 
     getRawDatabase = () => {
-        const { firestore } = this.props;
-        var allFoodItems = firestore.collection('food-items')
+        var allFoodItems = FU.db.collection('food-items')
         allFoodItems.get().then(collection => {
             this.rawDatabase = collection;
         })
@@ -174,4 +173,4 @@ CoolGraph.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withFirestore(withStyles(styles)(CoolGraph));
+export default withStyles(styles)(CoolGraph);

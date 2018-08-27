@@ -16,11 +16,6 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 2,
     right: theme.spacing.unit * 2,
   },
-  body: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit ,
-    marginTop: theme.spacing.unit * 2,
-  }
 });
 
 class WorkoutsTab extends React.Component {
@@ -79,15 +74,9 @@ class WorkoutsTab extends React.Component {
     this.setState({logOpen: false});
   }
 
-  handleDateChanged = field => {
-    return moment => {
-      this.setState({ [field]: FU.timestampFromMoment(moment) });
-    }
-  }
-
   render() {
     return (
-      <div className={this.props.classes.body}>
+      <div>
         <Grid container spacing={24}>
           <Grid item xs={12}>
             <DatePicker
@@ -95,7 +84,7 @@ class WorkoutsTab extends React.Component {
               fullWidth
               format="YYYY-MM-DD"
               value={this.state.date}
-              onChange={this.handleDateChanged}
+              onChange={this.updateDate}
             />
           </Grid>
           

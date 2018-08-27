@@ -108,8 +108,7 @@ class LogSetDialog extends React.Component {
             Reps: vs[index+0], 
             Weight: vs[index+1], 
             Date: ts });
-          moment(date).add(1, 'minutes').toDate()
-          date = moment(date).add(1, 'minutes').toDate()
+          date = moment(date).add(1, 'milliseconds').toDate()
         }
         index += 2;
       }  
@@ -163,7 +162,7 @@ class LogSetDialog extends React.Component {
               {inputs.map( (value, index) => {
                 return (
                   <Grid item xs={3} key={index}>
-                    <Typography className={this.props.classes.header} align='center' variant='caption'>{value}</Typography>
+                    <Typography className={this.props.classes.header} variant='caption'>{value}</Typography>
                   </Grid>
                 );
               }, this)}
@@ -176,7 +175,7 @@ class LogSetDialog extends React.Component {
                       name={inputs[index%inputs.length]} 
                       onChange={this.handleSetChangeForIndex(index)}  
                       placeholder={this.state.placeholders[index%inputs.length]} 
-                      type={'number'}/>
+                      type={'tel'}/>
                   </Grid>
                 );
               }, this)}

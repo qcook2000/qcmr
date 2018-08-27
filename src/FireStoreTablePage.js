@@ -40,6 +40,13 @@ class FireStoreTablePage extends React.Component {
       filterType: 'checkbox',
       responsive: 'scroll',
       onCellClick: this.onCellClick,
+      pagination: false,
+      print: false,
+      search: false,
+      download: false,
+      viewColumns: false,
+      filter: false,
+      rowsPerPage: 500
     };
 
     this.querySnapshot = null;

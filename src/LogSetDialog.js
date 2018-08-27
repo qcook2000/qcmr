@@ -11,6 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import FU from './FirestoreUtils';
 import { Typography } from '@material-ui/core';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
+import moment from 'moment';
 
 
 const styles = theme => ({
@@ -95,32 +96,31 @@ class LogSetDialog extends React.Component {
     var docs = [];
     while (this.state.values.length > index) {
       var vs = this.state.values;
-      var ts = FU.timestampFromDate(date);
       for (var i = 0; i < 2; i++) {
         if (vs[index] !== '' && vs[index+1] !== '') {
           // We have data
+          var ts = FU.timestampFromDate(date);
           var log = FU.db.collection('workout-history').doc();
           docs.push(log);
-          batch.set(log, { 
+          batch = batch.set(log, { 
             Person: peeps[i],
             Exercise: FU.db.doc('exercises/'+this.state.exercise.value),
             Reps: vs[index+0], 
             Weight: vs[index+1], 
             Date: ts });
+          moment(date).add(1, 'minutes').toDate()
+          date = moment(date).add(1, 'minutes').toDate()
         }
         index += 2;
       }  
-      date = new Date(date.getMilliseconds()+(1000*60))
     }
 
-    console.log(docs);
     if (docs.length === 0) {
       alert('Nothing to save');
       return;
     }
     // Commit the batch
     batch.commit().then(response => {
-      console.log("Added!", response);
       this.props.handleClose();
     }, function(error) {
       console.error("Failed!", error);

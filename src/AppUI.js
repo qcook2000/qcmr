@@ -20,16 +20,33 @@ import WorkoutsTab from './WorkoutsTab';
 import ProfileTab from './ProfileTab';
 import WHistoryLog from './WHistoryLog';
 
-
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom'
+import { Switch, Route, NavLink } from 'react-router-dom'
 
 
 const drawerWidth = 240;
-const tabs = ['Can Mike Eat', 'Workout', 'Exercises', 'Workout History', 'Profile']
+const tabs = [
+  { 
+    name:'Mike\'s Foods', 
+    route:'/mikes-foods',
+    component: CanMikeEatTab,
+  },{ 
+    name:'Workout', 
+    route:'/workout',
+    component: WorkoutsTab,
+  },{ 
+    name:'Exercises', 
+    route:'/exercises',
+    component: ExercisesTab,
+  },{ 
+    name:'Workout History', 
+    route:'/workout-history',
+    component: WHistoryLog,
+  },{ 
+    name:'Profile',
+    route:'/profile',
+    component: ProfileTab,
+  }
+];
 
 const styles = theme => ({
   root: {
@@ -77,6 +94,9 @@ const styles = theme => ({
       marginLeft: drawerWidth,
     },
   },
+  activeNav: {
+    backgroundColor: theme.palette.grey[300],
+  }
 });
 
 class ResponsiveDrawer extends React.Component {
@@ -86,36 +106,23 @@ class ResponsiveDrawer extends React.Component {
       mobileOpen: false,
     };
   }
-
-  componentDidMount() {
-    this.setTab(0);
-    PubSub.subscribe('tabChange', this.tabChangeSubReceived);
-  }
   
-  tabChangeSubReceived = (msg, data) => {
-      if (data.tabIndex === 0) {
-        this.setState({ eatTabFilter: data.eatTabFilter});
-      }
-      this.setTab(data.tabIndex);
-  }
-
-  handlerForTabIndex = index => {
-    return () => {
-      this.setTab(index);
-    }
-  };
-
-  setTab = (index) => {
-    this.setState({ selectedTab: index, mobileOpen: false, title:tabs[index] })
-  };
-
   handleDrawerToggle = () => {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }));
   };
 
+  setTitle = (title) => {
+    this.setState({ title: title });
+  };
+
+  titleForPath = (path) => {
+    var tab = tabs.find(tab => { return tab.route === '/' + path });
+    return tab ? tab.name : '[No Title]';
+  }
+
   render() {
     const { classes, theme } = this.props;
-    const { selectedTab, eatTabFilter, title } = this.state;
+    const { title } = this.state;
 
     const drawer = (
       <div>
@@ -124,8 +131,8 @@ class ResponsiveDrawer extends React.Component {
         <List component="nav">
           {tabs.map( (tab, index) => {
             return (
-              <ListItem button key={index} onClick={this.handlerForTabIndex(index)}>
-                <ListItemText primary={tab} />
+              <ListItem button component={NavLink} activeClassName={classes.activeNav} to={tab.route} key={index} onClick={(e) => this.setTitle(tab.name)}>
+                <ListItemText primary={tab.name} />
               </ListItem>
             );
           }, this)}
@@ -140,20 +147,19 @@ class ResponsiveDrawer extends React.Component {
       </div>
     );
 
+    const Title = ({path}) => (
+      <span>{this.titleForPath(path)}</span>
+    )
+
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerToggle}
-              className={classes.navIconHide}
-            >
+            <IconButton color="inherit" onClick={this.handleDrawerToggle} className={classes.navIconHide}>
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" noWrap>
-              {title}
+              <Route path="/:path" render={({match}) => <Title path={match.params.path} />} />
             </Typography>
           </Toolbar>
         </AppBar>
@@ -163,34 +169,26 @@ class ResponsiveDrawer extends React.Component {
             anchor={theme.direction === 'rtl' ? 'right' : 'left'}
             open={this.state.mobileOpen}
             onClose={this.handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
+            classes={{ paper: classes.drawerPaper, }}
+            ModalProps={{ keepMounted: true, }}
           >
             {drawer}
           </Drawer>
         </Hidden>
         <Hidden smDown implementation="css">
-          <Drawer
-            variant="permanent"
-            open
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
+          <Drawer variant="permanent" open classes={{ paper: classes.drawerPaper,}}>
             {drawer}
           </Drawer>
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {selectedTab === 0 && <CanMikeEatTab eatTabFilter={eatTabFilter}/>}
-          {selectedTab === 1 && <WorkoutsTab />}
-          {selectedTab === 2 && <ExercisesTab />}
-          {selectedTab === 3 && <WHistoryLog />}
-          {selectedTab === 4 && <ProfileTab />}
+          <Switch>
+            {tabs.map( (tab, index) => {
+              return (
+                <Route key={index} path={tab.route} component={tab.component}/>
+              );
+            }, this)}
+          </Switch>
         </main>
       </div>
     );

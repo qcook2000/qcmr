@@ -29,8 +29,17 @@ const drawerWidth = 240;
 const tabs = ['Can Mike Eat', 'Workout', 'Exercises', 'Workout History', 'Profile']
 
 const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    height: '100%',
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex',
+    width: '100%',
+  },
   appBar: {
-    position: 'absolute',
+    position: 'fixed',
     marginLeft: drawerWidth,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -45,13 +54,16 @@ const styles = theme => ({
   drawerPaper: {
     width: drawerWidth,
     [theme.breakpoints.up('md')]: {
-      position: 'relative',
+      position: 'fixed',
     },
   },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit*2,
+    padding: theme.spacing.unit * 3,
+    [theme.breakpoints.up('md')]: {
+      marginLeft: drawerWidth,
+    },
   },
 });
 

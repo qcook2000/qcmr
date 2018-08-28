@@ -11,31 +11,31 @@ const styles = theme => ({
 
 const columns = [
   { name: 'Date',
-    id: 'Date',
+    id: 'date',
     type: FU.Types.Date,
     options: { filter: false, customBodyRender: FU.timestampRender },
   },{ 
     name: 'Exercise',
-    id: 'Exercise',
+    id: 'exercise',
     type: FU.Types.Reference,
     referenceCollection: 'exercises',
     options: { filter: false, sort: false },
   },{
     name: 'Person',
-    id: 'Person',
+    id: 'person',
   },{
     name: 'Weight',
-    id: 'Weight',
+    id: 'weight',
     options: { filter: false },
   },{
     name: 'Reps',
-    id: 'Reps',
+    id: 'reps',
     options: { filter: false },
   },
 ];
 
 const settings = {
-  path: 'workout-history',
+  path: 'workouts',
   listTitle: 'Workout History',
   drawerItemName: 'Exercise',
 }

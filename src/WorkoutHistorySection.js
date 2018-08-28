@@ -16,12 +16,12 @@ const styles = theme => ({
 class CanMikeEatTab extends React.Component {
 
   itemFor = (value, index, person) => {
-    if (value.data().Person === person) {
+    if (value.data().person === person) {
       return (
         <Grid container spacing={0} key={index}>
-          <Grid item xs={5}><Typography align='right'>{value.data().Reps}</Typography></Grid>
+          <Grid item xs={5}><Typography align='right'>{value.data().reps}</Typography></Grid>
           <Grid item xs={2}><Typography align='center' color='textSecondary'>@</Typography></Grid>
-          <Grid item xs={5}><Typography>{value.data().Weight + 'lbs'}</Typography></Grid>
+          <Grid item xs={5}><Typography>{value.data().weight + 'lbs'}</Typography></Grid>
         </Grid>
       ); 
     }
@@ -29,11 +29,12 @@ class CanMikeEatTab extends React.Component {
   }
 
   render() {
+    console.log(this.props.data[0].data());
     return (
       <Paper className={this.props.classes.paper}>
         <Grid container spacing={8}>
           <Grid item xs={12}>
-            <Typography variant='title'><ReferenceCell key={this.props.data[0].data().Exercise.id} path={'exercises/'+this.props.data[0].data().Exercise.id}/></Typography>
+            <Typography variant='title'><ReferenceCell key={this.props.data[0].data().exercise.id} path={'exercises/'+this.props.data[0].data().exercise.id}/></Typography>
             <Divider/>
           </Grid>
           <Grid item xs={1}><Typography align='left' variant='title' className={this.props.classes.rLabel}>Q</Typography></Grid>

@@ -19,6 +19,10 @@ import ExercisesTab from './ExercisesTab';
 import WorkoutsTab from './WorkoutsTab';
 import ProfileTab from './ProfileTab';
 import WHistoryLog from './WHistoryLog';
+import Button from '@material-ui/core/Button';
+import FU from './FirestoreUtils';
+
+
 
 
 const drawerWidth = 240;
@@ -103,6 +107,7 @@ class ResponsiveDrawer extends React.Component {
           }, this)}
         </List>
         <Divider />
+        <Button onClick={FU.updateDataInCollection}>DATA</Button>
         <Typography>Made by Q + C</Typography>
       </div>
     );

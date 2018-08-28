@@ -61,15 +61,15 @@ class LogSetDialog extends React.Component {
 
   updatePlaceholders = (exercisePath) => {
     console.log('HERE', FU.db.doc(exercisePath));
-    FU.db.collection('workout-history').where('Exercise', '==', FU.db.doc(exercisePath)).get()
+    FU.db.collection('workouts').where('exercise', '==', FU.db.doc(exercisePath)).get()
     .then(querySnapshot => {
       var newPlaceHolders = [undefined, undefined, undefined, undefined]
       querySnapshot.forEach(doc => {
         var data = doc.data();
-        var offSet = (data.Person === 'C') ? 2 : 0;
-        if (typeof newPlaceHolders[offSet] === 'undefined' || newPlaceHolders[offSet+1] < data.Weight) {
-          newPlaceHolders[offSet] = data.Reps;
-          newPlaceHolders[offSet+1] = data.Weight;
+        var offSet = (data.person === 'C') ? 2 : 0;
+        if (typeof newPlaceHolders[offSet] === 'undefined' || newPlaceHolders[offSet+1] < data.weight) {
+          newPlaceHolders[offSet] = data.reps;
+          newPlaceHolders[offSet+1] = data.weight;
         }
       });
       newPlaceHolders[0] = newPlaceHolders[0] ? '' + newPlaceHolders[0] : '10';
@@ -100,14 +100,14 @@ class LogSetDialog extends React.Component {
         if (vs[index] !== '' && vs[index+1] !== '') {
           // We have data
           var ts = FU.timestampFromDate(date);
-          var log = FU.db.collection('workout-history').doc();
+          var log = FU.db.collection('workouts').doc();
           docs.push(log);
           batch = batch.set(log, { 
-            Person: peeps[i],
-            Exercise: FU.db.doc('exercises/'+this.state.exercise.value),
-            Reps: vs[index+0], 
-            Weight: vs[index+1], 
-            Date: ts });
+            person: peeps[i],
+            exercise: FU.db.doc('exercises/'+this.state.exercise.value),
+            reps: vs[index+0], 
+            weight: vs[index+1], 
+            date: ts });
           date = moment(date).add(1, 'milliseconds').toDate()
         }
         index += 2;

@@ -38,18 +38,18 @@ class WorkoutsTab extends React.Component {
     if (this.unsub) this.unsub();
     var start = moment(date).startOf('day').toDate();
     var end = moment(date).endOf('day').toDate();
-    this.unsub = FU.db.collection('workout-history')
-        .where('Date', '>=', start)
-        .where('Date', '<=', end)
-        .orderBy('Date')
+    this.unsub = FU.db.collection('workouts')
+        .where('timestamp', '>=', start)
+        .where('timestamp', '<=', end)
+        .orderBy('timestamp')
         .onSnapshot(querySnapshot => {
       var newDataArray = [];
       var dSec = [];
       querySnapshot.forEach(element => {
         // Handler for two type of exercise fields
         if (dSec.length !== 0) {
-          var oldE = dSec[0].data().Exercise && dSec[0].data().Exercise.id ? dSec[0].data().Exercise.id : dSec[0].data().Exercise;
-          var newE = element.data().Exercise && element.data().Exercise.id ? element.data().Exercise.id : element.data().Exercise;
+          var oldE = dSec[0].data().exercise && dSec[0].data().exercise.id ? dSec[0].data().exercise.id : dSec[0].data().exercise;
+          var newE = element.data().exercise && element.data().exercise.id ? element.data().exercise.id : element.data().exercise;
           if (newE !== oldE) {
             newDataArray.push(dSec);
             dSec = [];

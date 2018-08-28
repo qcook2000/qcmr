@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import '@firebase/firestore';
-import moment from 'moment';
+// import moment from 'moment';
 
 var FU = {};
 FU.initd = false;

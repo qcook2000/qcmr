@@ -19,8 +19,7 @@ import ExercisesTab from './ExercisesTab';
 import WorkoutsTab from './WorkoutsTab';
 import ProfileTab from './ProfileTab';
 import WHistoryLog from './WHistoryLog';
-import Button from '@material-ui/core/Button';
-import FU from './FirestoreUtils';
+
 
 
 
@@ -120,7 +119,11 @@ class ResponsiveDrawer extends React.Component {
         </List>
         <Divider />
         {/* <Button onClick={FU.updateDataInCollection}>DATA</Button> */}
-        <Typography>Made by Q + C</Typography>
+        <List>
+          <ListItem>
+            <ListItemText primary='Made by Q + C' />
+          </ListItem>
+        </List>
       </div>
     );
 

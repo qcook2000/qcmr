@@ -107,7 +107,7 @@ class LogSetDialog extends React.Component {
             exercise: FU.db.doc('exercises/'+this.state.exercise.value),
             reps: vs[index+0], 
             weight: vs[index+1], 
-            date: ts });
+            timestamp: ts });
           date = moment(date).add(1, 'milliseconds').toDate()
         }
         index += 2;

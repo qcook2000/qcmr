@@ -11,9 +11,9 @@ const styles = theme => ({
 
 const columns = [
   { name: 'Date',
-    id: 'date',
+    id: 'timestamp',
     type: FU.Types.Date,
-    options: { filter: false, customBodyRender: FU.timestampRender },
+    options: { filter: false },
   },{ 
     name: 'Exercise',
     id: 'exercise',

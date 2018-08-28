@@ -107,7 +107,7 @@ class ResponsiveDrawer extends React.Component {
           }, this)}
         </List>
         <Divider />
-        <Button onClick={FU.updateDataInCollection}>DATA</Button>
+        {/* <Button onClick={FU.updateDataInCollection}>DATA</Button> */}
         <Typography>Made by Q + C</Typography>
       </div>
     );

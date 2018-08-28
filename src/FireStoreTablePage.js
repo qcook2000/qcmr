@@ -7,6 +7,7 @@ import FU from './FirestoreUtils';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import moment from 'moment';
+import ReferenceCell from './ReferenceCell';
 
 const styles = theme => ({
   button: {
@@ -30,10 +31,8 @@ class FireStoreTablePage extends React.Component {
       if (!column.options) {
         column.options = {};
       }
-      if (column.type == FU.Types.Date && !column.options.customBodyRender) {
-        column.options.customBodyRender = this.timeFieldRender;
-      } else if (column.type == FU.Types.Boolean && !column.options.customBodyRender) {
-        column.options.customBodyRender = this.booleanFieldRender;
+      if (!column.options.customBodyRender) {
+        column.options.customBodyRender = this.fieldRender;
       }
     });
 
@@ -41,17 +40,33 @@ class FireStoreTablePage extends React.Component {
       filterType: 'checkbox',
       responsive: 'scroll',
       onCellClick: this.onCellClick,
+      pagination: false,
+      print: false,
+      search: false,
+      download: false,
+      viewColumns: false,
+      filter: false,
+      rowsPerPage: 500
     };
 
     this.querySnapshot = null;
   }
 
-  timeFieldRender = (timestamp) => {
-    return !timestamp ? null : moment(timestamp.toDate()).format("YYYY-MM-DD");
-  }
-
-  booleanFieldRender = (myBool) => {
-    return myBool ? 'Yes' : 'No';
+  fieldRender = (field, data) => {
+    var column = this.props.columns[data.columnIndex];
+    if (column.type === FU.Types.Date) {
+      return !field ? '' : moment(field.toDate()).format("YYYY-MM-DD");
+    } else if (column.type === FU.Types.Reference) {
+      if (typeof field === 'string') {
+        return '*'+field;
+      } else {
+        return (<ReferenceCell key={field.id} path={field.path}/>);
+      }
+    } else if (column.type === FU.Types.Boolean && !column.options.customBodyRender) {
+      return field ? 'Yes' : 'No';
+    } else {
+      return !field ? '' : field;
+    }
   }
   
   componentDidMount = () => {
@@ -78,7 +93,11 @@ class FireStoreTablePage extends React.Component {
   }
 
   addButtonClicked = () => {
-    this.setState({editingItem: 'new', editingItemId: 'new'});
+    if (this.props.addButtonClicked) {
+      this.props.addButtonClicked();
+    } else {
+      this.setState({editingItem: 'new', editingItemId: 'new'});
+    }
   }
 
   onCellClick = (colIndex, rowIndex) => {

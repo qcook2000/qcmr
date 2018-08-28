@@ -3,10 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
+import FirestoreSelect from './FirestoreSelect';
 import Drawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
 import DatePicker from 'material-ui-pickers/DatePicker';
@@ -29,22 +26,69 @@ class EditDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = !props.editingItem || props.editingItem === 'new' ? {} : props.editingItem;
+
+    this.state.referenceFieldOptions = {};
+    this.state.referenceFieldSelected = {};
   }
+
+
+  componentDidMount = () => {
+    this.unsub = [];
+    this.props.columns.forEach(column => {
+      if (column.type !== FU.Types.Reference) {
+        return;
+      }
+
+      this.unsub.push(FU.db.collection(column.referenceCollection).onSnapshot(querySnapshot => {
+        var newData = [];
+        this.querySnapshot = querySnapshot;
+        var selected = null;
+        querySnapshot.forEach(element => {
+          var option = {value: element.id, label: element.data().name};
+          if (this.state[column.id]) {
+            if (this.state[column.id] === element.data().name || this.state[column.id].id === element.id) {
+              selected = option;
+            }
+          }
+          newData.push(option);
+        });
+
+        var referenceFieldOptions = {...this.state.referenceFieldOptions}
+        referenceFieldOptions[column.id] = newData;
+        this.setState({referenceFieldOptions: referenceFieldOptions});
+        
+        var referenceFieldSelected = {...this.state.referenceFieldSelected}
+        referenceFieldSelected[column.id] = selected;
+        this.setState({referenceFieldSelected: referenceFieldSelected})
+      }));
+    });
+  }
+
+  componentWillUnmount = () => {
+    this.unsub.forEach(unsuber => {
+      unsuber();
+    });
+  }
+
 
   handleAddOrSave = () => {
     var newItem = {}
     this.props.columns.forEach(column => {
-      newItem[column.id] = this.state[column.id];
+      if (this.state[column.id]) {
+        newItem[column.id] = this.state[column.id];
+      }
     });
 
     if (this.props.editingItem === 'new') {
       FU.db.collection(this.props.settings.path).add(newItem).then(response => {
+        console.log("Added!", response);
         this.props.handleClose();
       }, function(error) {
         console.error("Failed!", error);
       });
     } else {
       FU.db.collection(this.props.settings.path).doc(this.props.editingItemId).set(newItem).then(response => {
+        console.log("Edited!", response);
         this.props.handleClose();
       }, function(error) {
         console.error("Failed!", error);
@@ -63,6 +107,17 @@ class EditDrawer extends React.Component {
     var value = event.target.value;
     if (type === FU.Types.Number) value = parseFloat(value);
     this.setState({ [event.target.name]: value });
+  };
+
+  selectHandlerForField = field => {
+    return option => {
+      if (!option || !option.value) return;
+      var column = this.props.columns.find(e => { return e.id === field});
+      this.setState({ [field]: FU.db.collection(column.referenceCollection).doc(option.value) });
+      var referenceFieldSelected = {...this.state.referenceFieldSelected}
+      referenceFieldSelected[field] = option;
+      this.setState({referenceFieldSelected: referenceFieldSelected})
+    }
   };
 
   titlePrefix = () => {
@@ -87,22 +142,13 @@ class EditDrawer extends React.Component {
                     value={this.state[column.id] ? this.state[column.id].toDate() : null}
                     onChange={this.dateHandlerForField(column.id)}
                   />
-                ) : column.autoCompleteOptions ? (
-                  <FormControl fullWidth className={classes.formControl}>
-                    <InputLabel htmlFor={'input-' + column.id}>{column.name}</InputLabel>
-                    <Select 
-                      coltype={column.type}
-                      name={column.id}
-                      value={this.state[column.id] ? this.state[column.id] : ''} 
-                      onChange={this.handleTextChange} 
-                      inputProps={{name: column.id, id: 'input-' + column.id,}}
-                    >
-                      <MenuItem value="" disabled>{column.name}</MenuItem>
-                      {column.autoCompleteOptions.map(function(name, i){
-                        return <MenuItem value={name} key={i}>{name}</MenuItem>;
-                      })}
-                    </Select>
-                  </FormControl>
+                ) : column.type === FU.Types.Reference ? (
+                  <FirestoreSelect
+                    options={this.state.referenceFieldOptions[column.id]}
+                    placeholder={column.name}
+                    onChange={this.selectHandlerForField(column.id)}
+                    value={this.state.referenceFieldSelected[column.id]}
+                  />
                 ) : (
                   <TextField 
                     coltype={column.type}

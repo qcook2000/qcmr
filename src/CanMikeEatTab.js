@@ -19,13 +19,13 @@ const columns = [
     name: 'Updated',
     id: 'updated',
     type: FU.Types.Date,
-    options: { filter: false, customBodyRender: FU.timestampRender }
+    options: { filter: false }
   },{
     name: 'Can he eat?',
     id: 'caneat',
-    autoCompleteOptions: [
-      'Yes!', 'No!', 'Yes... sorta...', '???', 'No! He\'s allergic!', 'Are you trying to KILL him???',
-    ],
+    type: FU.Types.Reference,
+    referenceCollection: 'can-eat-options',
+    options: { filter: false, sort: false },
   },{
     name: 'Notes',
     id: 'notes',

@@ -13,6 +13,7 @@ const columns = [
   {
     name: 'Name',
     id: 'name',
+    sort: 'asc',
   },
 ];
 

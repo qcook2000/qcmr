@@ -12,7 +12,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import MenuIcon from '@material-ui/icons/Menu';
-import PubSub from 'pubsub-js';
 
 import CanMikeEatTab from './CanMikeEatTab';
 import ExercisesTab from './ExercisesTab';
@@ -53,7 +52,6 @@ const styles = theme => ({
     flexGrow: 1,
     height: '100%',
     zIndex: 1,
-    overflow: 'hidden',
     position: 'relative',
     display: 'flex',
     width: '100%',
@@ -111,10 +109,6 @@ class ResponsiveDrawer extends React.Component {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }));
   };
 
-  setTitle = (title) => {
-    this.setState({ title: title });
-  };
-
   titleForPath = (path) => {
     var tab = tabs.find(tab => { return tab.route === '/' + path });
     return tab ? tab.name : '[No Title]';
@@ -122,7 +116,6 @@ class ResponsiveDrawer extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-    const { title } = this.state;
 
     const drawer = (
       <div>
@@ -131,7 +124,7 @@ class ResponsiveDrawer extends React.Component {
         <List component="nav">
           {tabs.map( (tab, index) => {
             return (
-              <ListItem button component={NavLink} activeClassName={classes.activeNav} to={tab.route} key={index} onClick={(e) => this.setTitle(tab.name)}>
+              <ListItem button component={NavLink} activeClassName={classes.activeNav} to={tab.route} key={index}>
                 <ListItemText primary={tab.name} />
               </ListItem>
             );

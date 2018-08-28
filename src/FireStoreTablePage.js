@@ -1,13 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import MUIDataTable from 'mui-datatables';
 import EditDrawer from './EditDrawer';
 import FU from './FirestoreUtils';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import moment from 'moment';
 import ReferenceCell from './ReferenceCell';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const styles = theme => ({
   button: {
@@ -27,59 +33,20 @@ class FireStoreTablePage extends React.Component {
       columns: props.columns,
     };
 
-    this.state.columns.forEach(column => {
-      if (!column.options) {
-        column.options = {};
-      }
-      if (!column.options.customBodyRender) {
-        column.options.customBodyRender = this.fieldRender;
-      }
-    });
-
-    this.options = {
-      filterType: 'checkbox',
-      responsive: 'scroll',
-      onCellClick: this.onCellClick,
-      pagination: false,
-      print: false,
-      search: false,
-      download: false,
-      viewColumns: false,
-      selectableRows: false,
-      filter: false,
-      rowsPerPage: 500
-    };
-
     this.querySnapshot = null;
-  }
-
-  fieldRender = (field, data) => {
-    var column = this.props.columns[data.columnIndex];
-    if (column.type === FU.Types.Date) {
-      return !field ? '' : moment(field.toDate()).format("YYYY-MM-DD");
-    } else if (column.type === FU.Types.Reference) {
-      if (typeof field === 'string') {
-        return '*'+field;
-      } else {
-        return (<ReferenceCell key={field.id} path={field.path}/>);
-      }
-    } else if (column.type === FU.Types.Boolean && !column.options.customBodyRender) {
-      return field ? 'Yes' : 'No';
-    } else {
-      return !field ? '' : field;
-    }
   }
   
   componentDidMount = () => {
-    this.unsub = FU.db.collection(this.props.settings.path).onSnapshot(querySnapshot => {
+    var sortCol = this.props.columns.find(col => { return col.sort === 'asc' || col.sort === 'desc'});
+    var collectionQ = FU.db.collection(this.props.settings.path);
+    if (sortCol) {
+      collectionQ = collectionQ.orderBy(sortCol.id, sortCol.sort);
+    }
+    this.unsub = collectionQ.onSnapshot(querySnapshot => {
       var newData = [];
       this.querySnapshot = querySnapshot;
       querySnapshot.forEach(element => {
-        var newRow = [];
-        this.props.columns.forEach(column => {
-          newRow.push(element.data()[column.id]);
-        });
-        newData.push(newRow);
+        newData.push(element);
       });
       this.setState({data:newData});
     });
@@ -101,20 +68,56 @@ class FireStoreTablePage extends React.Component {
     }
   }
 
-  onCellClick = (colIndex, rowIndex) => {
-    console.log(this.querySnapshot.docs[rowIndex]);
+  onRowClick = (rowIndex) => {
     this.setState({editingItem: this.querySnapshot.docs[rowIndex].data(), editingItemId: this.querySnapshot.docs[rowIndex].id });
   }
 
+  tableCell = (item, column, colindex) => {
+    var field = item.data()[column.id];
+    if (column.type === FU.Types.Date) {
+      field = !field ? '' : moment(field.toDate()).format("YYYY-MM-DD");
+    } else if (column.type === FU.Types.Reference) {
+      if (typeof field === 'string') {
+        field = '*'+field;
+      } else {
+        field = (<ReferenceCell key={field.id} path={field.path}/>);
+      }
+    } else if (column.type === FU.Types.Boolean && !column.options.customBodyRender) {
+      field = field ? 'Yes' : 'No';
+    } else {
+      field = !field ? '' : field;
+    }
+    return <TableCell key={colindex}>{field}</TableCell>
+  }
+
   render() {
+    const { classes } = this.props;
     return (
       <React.Fragment>
-        <MUIDataTable 
-          title={this.props.settings.listTitle} 
-          data={this.state.data} 
-          columns={this.props.columns} 
-          options={this.options} 
-        />
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                {this.props.columns.map( (column, index) => {
+                  return (
+                    <TableCell key={index}>{column.name}</TableCell>
+                  );
+                }, this)}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.data.map((item, index) => {
+                return (
+                  <TableRow key={item.id} onClick={() => { this.onRowClick(index) }}>
+                    {this.props.columns.map( (column, colindex) => {
+                      return this.tableCell(item, column, colindex); 
+                    }, this)}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </Paper>
         <EditDrawer 
           key={this.state.editingItemId ? this.state.editingItemId : ''}
           editingItemId={this.state.editingItemId}

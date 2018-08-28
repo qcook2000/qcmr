@@ -13,24 +13,21 @@ const columns = [
   { name: 'Date',
     id: 'timestamp',
     type: FU.Types.Date,
-    options: { filter: false },
+    sort: 'desc',
   },{ 
     name: 'Exercise',
     id: 'exercise',
     type: FU.Types.Reference,
     referenceCollection: 'exercises',
-    options: { filter: false, sort: false },
   },{
     name: 'Person',
     id: 'person',
   },{
     name: 'Weight',
     id: 'weight',
-    options: { filter: false },
   },{
     name: 'Reps',
     id: 'reps',
-    options: { filter: false },
   },
 ];
 

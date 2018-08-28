@@ -11,7 +11,7 @@ const styles = theme => ({
 const columns = [
   { name: 'Name',
     id: 'name',
-    options: {filter: false}
+    sort: 'asc',
   },{ 
     name: 'Category',
     id: 'category',
@@ -19,18 +19,15 @@ const columns = [
     name: 'Updated',
     id: 'updated',
     type: FU.Types.Date,
-    options: { filter: false }
   },{
     name: 'Can he eat?',
     id: 'caneat',
     type: FU.Types.Reference,
     referenceCollection: 'can-eat-options',
-    options: { filter: false, sort: false },
   },{
     name: 'Notes',
     id: 'notes',
     type: FU.Types.LongString,
-    options: { filter: false }
   },
 ];
 

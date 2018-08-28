@@ -21,7 +21,11 @@ import ProfileTab from './ProfileTab';
 import WHistoryLog from './WHistoryLog';
 
 
-
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
 
 
 const drawerWidth = 240;
@@ -50,6 +54,15 @@ const styles = theme => ({
     },
   },
   toolbar: theme.mixins.toolbar,
+  logo: {
+    width: '100%',
+    height: '100%',
+    background: 'url(logo.png)',
+    backgroundSize: 'auto 50%',
+    backgroundPosition: `${theme.spacing.unit * 3}px center`,
+    backgroundRepeat: 'no-repeat',
+    position: 'absolute',
+  },
   drawerPaper: {
     width: drawerWidth,
     [theme.breakpoints.up('md')]: {
@@ -106,7 +119,7 @@ class ResponsiveDrawer extends React.Component {
 
     const drawer = (
       <div>
-        <div className={classes.toolbar} />
+        <div className={classes.toolbar} style={{position:'relative'}}><div className={classes.logo}></div></div>
         <Divider />
         <List component="nav">
           {tabs.map( (tab, index) => {

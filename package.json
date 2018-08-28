@@ -18,6 +18,7 @@
     "react-chartkick": "^0.3.0",
     "react-dom": "^16.4.1",
     "react-firestore": "^0.8.1",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "react-select": "^2.0.0",
     "react-vis": "^1.10.4"

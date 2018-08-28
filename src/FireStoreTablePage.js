@@ -45,6 +45,7 @@ class FireStoreTablePage extends React.Component {
       search: false,
       download: false,
       viewColumns: false,
+      selectableRows: false,
       filter: false,
       rowsPerPage: 500
     };

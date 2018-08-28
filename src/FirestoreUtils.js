@@ -66,11 +66,11 @@ FU.uploadData = () => {
 }
 
 FU.updateDataInCollection = () => {
-  var collection = FU.db.collection('workouts');
+  var collection = FU.db.collection('workoutsTest');
   collection.get().then(snapshot => {
     snapshot.forEach(doc => {
-      collection.doc(doc.id).set({
-          // DO SOMETHING
+      FU.db.collection('workouts').doc().set({
+     
       })
       .then(function() {
           console.log("Document successfully updated!");

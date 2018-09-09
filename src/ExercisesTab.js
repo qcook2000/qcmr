@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-// import FU from './FirestoreUtils';
 import FireStoreTablePage from './FireStoreTablePage';
-// import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   

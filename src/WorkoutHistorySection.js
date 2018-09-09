@@ -29,7 +29,6 @@ class CanMikeEatTab extends React.Component {
   }
 
   render() {
-    console.log(this.props.data[0].data());
     return (
       <Paper className={this.props.classes.paper}>
         <Grid container spacing={8}>

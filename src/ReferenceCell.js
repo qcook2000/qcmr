@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -14,7 +14,7 @@ class ReferenceCell extends React.Component {
   }
 
   componentDidMount = () => {
-    this.unsub = FU.db.doc(this.props.path).onSnapshot(doc => {
+    this.unsub = db.doc(this.props.path).onSnapshot(doc => {
       this.setState({value: doc.data().name});
     });
   }
@@ -22,7 +22,6 @@ class ReferenceCell extends React.Component {
   componentWillUnmount = () => {
     this.unsub();
   }
-
 
   render() {
     return (

@@ -8,7 +8,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 import { Typography } from '@material-ui/core';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import moment from 'moment';
@@ -44,7 +44,7 @@ class LogSetDialog extends React.Component {
 
 
   componentDidMount = () => {
-    this.unsub = FU.db.collection('exercises').onSnapshot(querySnapshot => {
+    this.unsub = db.collection('exercises').onSnapshot(querySnapshot => {
       var newData = [];
       this.querySnapshot = querySnapshot;
       querySnapshot.forEach(element => {
@@ -60,8 +60,8 @@ class LogSetDialog extends React.Component {
   }
 
   updatePlaceholders = (exercisePath) => {
-    console.log('HERE', FU.db.doc(exercisePath));
-    FU.db.collection('workouts').where('exercise', '==', FU.db.doc(exercisePath)).get()
+    console.log('HERE', db.doc(exercisePath));
+    db.collection('workouts').where('exercise', '==', db.doc(exercisePath)).get()
     .then(querySnapshot => {
       var newPlaceHolders = [undefined, undefined, undefined, undefined]
       querySnapshot.forEach(doc => {
@@ -89,7 +89,7 @@ class LogSetDialog extends React.Component {
       return;
     }
     // Get a new write batch
-    var batch = FU.db.batch();
+    var batch = db.batch();
     var index = 0;
     var date = new Date();
     var peeps = ['Q', 'C'];
@@ -99,12 +99,12 @@ class LogSetDialog extends React.Component {
       for (var i = 0; i < 2; i++) {
         if (vs[index] !== '' && vs[index+1] !== '') {
           // We have data
-          var ts = FU.timestampFromDate(date);
-          var log = FU.db.collection('workouts').doc();
+          var ts = db.timestampFromDate(date);
+          var log = db.collection('workouts').doc();
           docs.push(log);
           batch = batch.set(log, { 
             person: peeps[i],
-            exercise: FU.db.doc('exercises/'+this.state.exercise.value),
+            exercise: db.doc('exercises/'+this.state.exercise.value),
             reps: vs[index+0], 
             weight: vs[index+1], 
             timestamp: ts });

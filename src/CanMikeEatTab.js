@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import FireStoreTablePage from './FireStoreTablePage';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 
 const styles = theme => ({
   
@@ -18,16 +18,16 @@ const columns = [
   },{
     name: 'Updated',
     id: 'updated',
-    type: FU.Types.Date,
+    type: db.Types.Date,
   },{
     name: 'Can he eat?',
     id: 'caneat',
-    type: FU.Types.Reference,
+    type: db.Types.Reference,
     referenceCollection: 'can-eat-options',
   },{
     name: 'Notes',
     id: 'notes',
-    type: FU.Types.LongString,
+    type: db.Types.LongString,
   },
 ];
 

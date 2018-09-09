@@ -1,23 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 import FireStoreTablePage from './FireStoreTablePage';
 
 const styles = theme => ({
   
 });
-//Date	Exercise	Person	Weight	Reps	ExerciseNumber	Power	AddedWeight	SideWeight
 
 const columns = [
   { name: 'Date',
     id: 'timestamp',
-    type: FU.Types.Date,
+    type: db.Types.Date,
     sort: 'desc',
   },{ 
     name: 'Exercise',
     id: 'exercise',
-    type: FU.Types.Reference,
+    type: db.Types.Reference,
     referenceCollection: 'exercises',
   },{
     name: 'Person',

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import EditDrawer from './EditDrawer';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import moment from 'moment';
@@ -38,7 +38,7 @@ class FireStoreTablePage extends React.Component {
   
   componentDidMount = () => {
     var sortCol = this.props.columns.find(col => { return col.sort === 'asc' || col.sort === 'desc'});
-    var collectionQ = FU.db.collection(this.props.settings.path);
+    var collectionQ = db.collection(this.props.settings.path);
     if (sortCol) {
       collectionQ = collectionQ.orderBy(sortCol.id, sortCol.sort);
     }
@@ -74,15 +74,15 @@ class FireStoreTablePage extends React.Component {
 
   tableCell = (item, column, colindex) => {
     var field = item.data()[column.id];
-    if (column.type === FU.Types.Date) {
+    if (column.type === db.Types.Date) {
       field = !field ? '' : moment(field.toDate()).format("YYYY-MM-DD");
-    } else if (column.type === FU.Types.Reference) {
+    } else if (column.type === db.Types.Reference) {
       if (typeof field === 'string') {
         field = '*'+field;
       } else {
         field = (<ReferenceCell key={field.id} path={field.path}/>);
       }
-    } else if (column.type === FU.Types.Boolean && !column.options.customBodyRender) {
+    } else if (column.type === db.Types.Boolean && !column.options.customBodyRender) {
       field = field ? 'Yes' : 'No';
     } else {
       field = !field ? '' : field;

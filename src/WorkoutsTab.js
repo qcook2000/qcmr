@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 import Grid from '@material-ui/core/Grid';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import moment from 'moment';
@@ -38,7 +38,7 @@ class WorkoutsTab extends React.Component {
     if (this.unsub) this.unsub();
     var start = moment(date).startOf('day').toDate();
     var end = moment(date).endOf('day').toDate();
-    this.unsub = FU.db.collection('workouts')
+    this.unsub = db.collection('workouts')
         .where('timestamp', '>=', start)
         .where('timestamp', '<=', end)
         .orderBy('timestamp')

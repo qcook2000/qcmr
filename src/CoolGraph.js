@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 import ReactChartkick from 'react-chartkick';
 import Chart from 'chart.js';
 import PubSub from 'pubsub-js';
@@ -68,7 +68,7 @@ class CoolGraph extends React.Component {
 
 
     getRawDatabase = () => {
-        var allFoodItems = FU.db.collection('food-items')
+        var allFoodItems = db.collection('food-items');
         allFoodItems.get().then(collection => {
             this.rawDatabase = collection;
         })

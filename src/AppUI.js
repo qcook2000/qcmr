@@ -124,7 +124,7 @@ class ResponsiveDrawer extends React.Component {
         <List component="nav">
           {tabs.map( (tab, index) => {
             return (
-              <ListItem button component={NavLink} activeClassName={classes.activeNav} to={tab.route} key={index}>
+              <ListItem button component={NavLink} activeClassName={classes.activeNav} to={tab.route} key={index} onClick={this.handleDrawerToggle}>
                 <ListItemText primary={tab.name} />
               </ListItem>
             );

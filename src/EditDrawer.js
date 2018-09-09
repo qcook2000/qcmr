@@ -7,7 +7,7 @@ import FirestoreSelect from './FirestoreSelect';
 import Drawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
 import DatePicker from 'material-ui-pickers/DatePicker';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 
 const styles = theme => ({
   paper: {
@@ -35,11 +35,11 @@ class EditDrawer extends React.Component {
   componentDidMount = () => {
     this.unsub = [];
     this.props.columns.forEach(column => {
-      if (column.type !== FU.Types.Reference) {
+      if (column.type !== db.Types.Reference) {
         return;
       }
 
-      this.unsub.push(FU.db.collection(column.referenceCollection).onSnapshot(querySnapshot => {
+      this.unsub.push(db.collection(column.referenceCollection).onSnapshot(querySnapshot => {
         var newData = [];
         this.querySnapshot = querySnapshot;
         var selected = null;
@@ -80,17 +80,17 @@ class EditDrawer extends React.Component {
     });
 
     if (this.props.editingItem === 'new') {
-      FU.db.collection(this.props.settings.path).add(newItem).then(response => {
+      db.collection(this.props.settings.path).add(newItem).then(response => {
         console.log("Added!", response);
         this.props.handleClose();
-      }, function(error) {
+      }, error => {
         console.error("Failed!", error);
       });
     } else {
-      FU.db.collection(this.props.settings.path).doc(this.props.editingItemId).set(newItem).then(response => {
+      db.collection(this.props.settings.path).doc(this.props.editingItemId).set(newItem).then(response => {
         console.log("Edited!", response);
         this.props.handleClose();
-      }, function(error) {
+      }, error => {
         console.error("Failed!", error);
       });
     }
@@ -98,14 +98,14 @@ class EditDrawer extends React.Component {
 
   dateHandlerForField = field => {
     return moment => {
-      this.setState({ [field]: FU.timestampFromMoment(moment) });
+      this.setState({ [field]: db.timestampFromMoment(moment) });
     }
   }
 
   handleTextChange = event => {
     var type = this.props.columns.find(e => { return e.id === event.target.name}).type;
     var value = event.target.value;
-    if (type === FU.Types.Number) value = parseFloat(value);
+    if (type === db.Types.Number) value = parseFloat(value);
     this.setState({ [event.target.name]: value });
   };
 
@@ -113,7 +113,7 @@ class EditDrawer extends React.Component {
     return option => {
       if (!option || !option.value) return;
       var column = this.props.columns.find(e => { return e.id === field});
-      this.setState({ [field]: FU.db.collection(column.referenceCollection).doc(option.value) });
+      this.setState({ [field]: db.collection(column.referenceCollection).doc(option.value) });
       var referenceFieldSelected = {...this.state.referenceFieldSelected}
       referenceFieldSelected[field] = option;
       this.setState({referenceFieldSelected: referenceFieldSelected})
@@ -134,7 +134,7 @@ class EditDrawer extends React.Component {
           {columns.map(column => {
             return (
               <div className={classes.formInput} key={column.id}>
-                {column.type === FU.Types.Date ? (
+                {column.type === db.Types.Date ? (
                   <DatePicker
                     label={column.name}
                     fullWidth
@@ -142,7 +142,7 @@ class EditDrawer extends React.Component {
                     value={this.state[column.id] ? this.state[column.id].toDate() : null}
                     onChange={this.dateHandlerForField(column.id)}
                   />
-                ) : column.type === FU.Types.Reference ? (
+                ) : column.type === db.Types.Reference ? (
                   <FirestoreSelect
                     options={this.state.referenceFieldOptions[column.id]}
                     placeholder={column.name}
@@ -157,8 +157,8 @@ class EditDrawer extends React.Component {
                     onChange={this.handleTextChange} 
                     fullWidth 
                     label={column.name} 
-                    multiline={column.type === FU.Types.LongString}
-                    type={column.type === FU.Types.Number ? 'number' : 'text'}/>
+                    multiline={column.type === db.Types.LongString}
+                    type={column.type === db.Types.Number ? 'number' : 'text'}/>
                 )}
               </div>
             );

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import FireStoreTablePage from './FireStoreTablePage';
-import FU from './FirestoreUtils';
+import { db } from './firebase';
 
 const styles = theme => ({
   
@@ -11,8 +11,7 @@ const styles = theme => ({
 const columns = [
   { name: 'Done',
     id: 'done',
-    type: FU.Types.Boolean,
-    options: { customBodyRender: FU.booleanRender }
+    type: db.Types.Boolean,
   },{ 
     name: 'Todo',
     id: 'text',

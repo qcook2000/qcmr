@@ -28,6 +28,7 @@ gsheetstoken.json
 .vscode/settings.json
 src/__pycache__/
 src/pyscripts/__pycache__/
+.firebase/*
 
 npm-debug.log*
 yarn-debug.log*

@@ -24,6 +24,9 @@ if (!firebase.apps.length) {
 //
 
 const auth = firebase.auth();
+auth.getGoogleProvider = () => {
+  return new firebase.auth.GoogleAuthProvider();
+}
 
 //
 // DB Extensions

@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Typography,
+  withMobileDialog,
+  withStyles
+} from '@material-ui/core';
 import FirestoreSelect from './FirestoreSelect';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import Grid from '@material-ui/core/Grid';
 import { db } from './firebase';
-import { Typography } from '@material-ui/core';
-import withMobileDialog from '@material-ui/core/withMobileDialog';
 import moment from 'moment';
 
 

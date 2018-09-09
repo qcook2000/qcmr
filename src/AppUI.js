@@ -1,16 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Hidden from '@material-ui/core/Hidden';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
+import { 
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
+  IconButton,
+  Hidden,
+  ListItem,
+  ListItemText,
+  Divider,
+  Button,
+  withStyles,
+  Avatar,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import CanMikeEatTab from './CanMikeEatTab';
@@ -18,8 +25,13 @@ import ExercisesTab from './ExercisesTab';
 import WorkoutsTab from './WorkoutsTab';
 import ProfileTab from './ProfileTab';
 import WHistoryLog from './WHistoryLog';
+import FoodSearchTab from './FoodSearchTab';
 
 import { Switch, Route, NavLink } from 'react-router-dom'
+import LoginSignupDialog from './LoginSignupDialog';
+import withAuthentication from './withAuthentication';
+import AuthUserContext from './AuthUserContext';
+import { auth } from './firebase';
 
 
 const drawerWidth = 240;
@@ -94,7 +106,10 @@ const styles = theme => ({
   },
   activeNav: {
     backgroundColor: theme.palette.grey[300],
-  }
+  },
+  flex: {
+    flexGrow: 1,
+  },
 });
 
 class ResponsiveDrawer extends React.Component {
@@ -102,12 +117,40 @@ class ResponsiveDrawer extends React.Component {
     super(props);
     this.state = {
       mobileOpen: false,
+      loginOpen: false,
+      logoutOpen: false,
     };
   }
   
   handleDrawerToggle = () => {
-    this.setState(state => ({ mobileOpen: !state.mobileOpen }));
+    this.setState({ mobileOpen: !this.state.mobileOpen });
   };
+
+  handleLoginDialogClose = () => {
+    this.setState({ loginOpen: false });
+  }
+
+  handleLoginClicked = () => {
+    this.setState({ loginOpen: true });
+  }
+
+  handleAvatarClick = () => {
+    this.setState({ logoutOpen: true });
+  }
+
+  handleLogoutCancel = () => {
+    this.setState({ logoutOpen: false });
+  }
+
+  handleLogoutClick = () => {
+    auth.signOut()
+    .then(authUser => {
+      this.setState({ logoutOpen: false });
+    })
+    .catch(error => {
+      alert(error);
+    });
+  }
 
   titleForPath = (path) => {
     var tab = tabs.find(tab => { return tab.route === '/' + path });
@@ -119,7 +162,9 @@ class ResponsiveDrawer extends React.Component {
 
     const drawer = (
       <div>
-        <div className={classes.toolbar} style={{position:'relative'}}><div className={classes.logo}></div></div>
+        <div className={classes.toolbar} style={{position:'relative'}}>
+          <NavLink className={classes.logo} to='/' onClick={this.handleDrawerToggle}></NavLink>
+        </div>
         <Divider />
         <List component="nav">
           {tabs.map( (tab, index) => {
@@ -131,7 +176,6 @@ class ResponsiveDrawer extends React.Component {
           }, this)}
         </List>
         <Divider />
-        {/* <Button onClick={FU.updateDataInCollection}>DATA</Button> */}
         <List>
           <ListItem>
             <ListItemText primary='Made by Q + C' />
@@ -151,9 +195,17 @@ class ResponsiveDrawer extends React.Component {
             <IconButton color="inherit" onClick={this.handleDrawerToggle} className={classes.navIconHide}>
               <MenuIcon />
             </IconButton>
-            <Typography variant="title" color="inherit" noWrap>
+            <Typography variant="title" color="inherit" noWrap className={classes.flex}>
               <Route path="/:path" render={({match}) => <Title path={match.params.path} />} />
             </Typography>
+            <AuthUserContext.Consumer>
+              {authUser => authUser
+                ? <Avatar alt={authUser.displayName} src={authUser.photoURL} onClick={this.handleAvatarClick}>
+                    {authUser.photoURL ? '': authUser.displayName ? authUser.displayName.charAt(0) : '?'}
+                  </Avatar>
+                : <Button color="inherit" onClick={this.handleLoginClicked} >Login</Button>
+              }
+            </AuthUserContext.Consumer>
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
@@ -181,8 +233,21 @@ class ResponsiveDrawer extends React.Component {
                 <Route key={index} path={tab.route} component={tab.component}/>
               );
             }, this)}
+            <Route path='/' component={FoodSearchTab}/>
           </Switch>
         </main>
+        <LoginSignupDialog open={this.state.loginOpen} handleClose={this.handleLoginDialogClose}/>
+        <Dialog open={this.state.logoutOpen}>
+          <DialogTitle id="alert-dialog-title">Logout?</DialogTitle>
+          <DialogActions>
+            <Button onClick={this.handleLogoutCancel} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleLogoutClick} color="primary">
+              Logout
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
@@ -193,4 +258,4 @@ ResponsiveDrawer.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(ResponsiveDrawer);
+export default withAuthentication(withStyles(styles, { withTheme: true })(ResponsiveDrawer));

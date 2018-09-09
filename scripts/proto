@@ -1,0 +1,7 @@
+#!/bin/bash
+
+protoc --plugin=protoc-gen-firebase_rules=scripts/protoc-gen-firebase_rules --firebase_rules_out=scripts --proto_path=./proto proto/proto.proto
+
+sed -e '/^\/\/ \@\@START/,/^\/\/ \@\@END/d' firestore.rules >> scripts/firestore.rules
+
+mv scripts/firestore.rules firestore.rules

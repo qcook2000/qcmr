@@ -15,9 +15,6 @@ import moment from 'moment';
 
 
 const styles = theme => ({
-  exercise: {
-    marginBottom: theme.spacing.unit * 3,
-  },
   header: {
     textTransform: 'uppercase'
   },
@@ -37,8 +34,10 @@ class LogSetDialog extends React.Component {
       dateTime: new Date(),
       exercise: null,
       values:['','','','','','','','','','','','',],
-      placeholders: ['10', '100', '10', '100'],
-      exerciseOptions: []
+      maxReps: [10, 10],
+      maxWeight: [100, 100],
+      exerciseOptions: [],
+      loading: false,
     };
   }
 
@@ -63,20 +62,21 @@ class LogSetDialog extends React.Component {
     console.log('HERE', db.doc(exercisePath));
     db.collection('workouts').where('exercise', '==', db.doc(exercisePath)).get()
     .then(querySnapshot => {
-      var newPlaceHolders = [undefined, undefined, undefined, undefined]
+      var newMaxWeight = [undefined, undefined]
+      var newMaxReps = [undefined, undefined]
       querySnapshot.forEach(doc => {
         var data = doc.data();
-        var offSet = (data.person === 'C') ? 2 : 0;
-        if (typeof newPlaceHolders[offSet] === 'undefined' || newPlaceHolders[offSet+1] < data.weight) {
-          newPlaceHolders[offSet] = data.reps;
-          newPlaceHolders[offSet+1] = data.weight;
+        var index = (data.person === 'C') ? 1 : 0;
+        if (typeof newMaxWeight[index] === 'undefined' || newMaxWeight[index] < data.weight) {
+          newMaxReps[index] = data.reps;
+          newMaxWeight[index] = data.weight;
         }
       });
-      newPlaceHolders[0] = newPlaceHolders[0] ? '' + newPlaceHolders[0] : '10';
-      newPlaceHolders[1] = newPlaceHolders[1] ? '' + newPlaceHolders[1] : '100';
-      newPlaceHolders[2] = newPlaceHolders[2] ? '' + newPlaceHolders[2] : '10';
-      newPlaceHolders[3] = newPlaceHolders[3] ? '' + newPlaceHolders[3] : '100';
-      this.setState({placeholders: newPlaceHolders});
+      newMaxReps[0] = newMaxReps[0] ? newMaxReps[0] : 10;
+      newMaxReps[1] = newMaxReps[1] ? newMaxReps[1] : 10;
+      newMaxWeight[0] = newMaxWeight[0] ? newMaxWeight[0] : 100;
+      newMaxWeight[1] = newMaxWeight[1] ? newMaxWeight[1] : 100;
+      this.setState({maxReps: newMaxReps, maxWeight: newMaxWeight});
     })
     .catch(function(error) {
         console.log("Error getting documents: ", error);
@@ -119,10 +119,13 @@ class LogSetDialog extends React.Component {
       return;
     }
     // Commit the batch
+    this.setState({ loading: true });
     batch.commit().then(response => {
       this.props.handleClose();
+      this.setState({ loading: false });
     }, function(error) {
       console.error("Failed!", error);
+      this.setState({ loading: false });
     });
   };
 
@@ -139,6 +142,18 @@ class LogSetDialog extends React.Component {
   handleExerciseChange = option => {
     this.setState({exercise: option});
     this.updatePlaceholders('exercises/'+option.value);
+  };
+
+  placeholderForIndex = index => {
+    var array = this.state.maxWeight;
+    if (index % 2 === 0) {
+      array = this.state.maxReps;
+    }
+    var qOrC = 0;
+    if (index % 4 > 1) {
+      qOrC = 1;
+    }
+    return '' + array[qOrC];
   };
 
   render() {
@@ -159,6 +174,15 @@ class LogSetDialog extends React.Component {
                   value={this.state.exercise}
                 />
               </Grid>
+              <Grid item xs={12} >
+                <Typography variant='caption'>
+                  Side weights: 
+                  <b> {((this.state.maxWeight[0] - 45) / 2)}</b> | 
+                  <b> {((this.state.maxWeight[1] - 45) / 2)}</b> (w/o bar: 
+                  <b> {(this.state.maxWeight[0] / 2)}</b> | 
+                  <b> {(this.state.maxWeight[1] / 2)}</b>)
+                </Typography>
+              </Grid>
               {inputs.map( (value, index) => {
                 return (
                   <Grid item xs={3} key={index}>
@@ -174,7 +198,7 @@ class LogSetDialog extends React.Component {
                       fullWidth 
                       name={inputs[index%inputs.length]} 
                       onChange={this.handleSetChangeForIndex(index)}  
-                      placeholder={this.state.placeholders[index%inputs.length]} 
+                      placeholder={this.placeholderForIndex(index)} 
                       type={'tel'}/>
                   </Grid>
                 );
@@ -183,7 +207,7 @@ class LogSetDialog extends React.Component {
                 <Button onClick={this.props.handleClose} color="secondary">
                   Cancel
                 </Button>
-                <Button onClick={this.handleSave} color="primary" variant='contained'>
+                <Button onClick={this.handleSave} color="primary" variant='contained' disabled={this.state.loading}>
                   Save
                 </Button>
               </Grid>

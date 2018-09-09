@@ -43,22 +43,20 @@ class WorkoutsTab extends React.Component {
         .where('timestamp', '<=', end)
         .orderBy('timestamp')
         .onSnapshot(querySnapshot => {
-      var newDataArray = [];
-      var dSec = [];
+      var workoutSetList = [];
+      var workoutSet = [];
       querySnapshot.forEach(element => {
         // Handler for two type of exercise fields
-        if (dSec.length !== 0) {
-          var oldE = dSec[0].data().exercise && dSec[0].data().exercise.id ? dSec[0].data().exercise.id : dSec[0].data().exercise;
-          var newE = element.data().exercise && element.data().exercise.id ? element.data().exercise.id : element.data().exercise;
-          if (newE !== oldE) {
-            newDataArray.push(dSec);
-            dSec = [];
+        if (workoutSet.length !== 0) {
+          if (element.data().exercise.id !== workoutSet[0].data().exercise.id) {
+            workoutSetList.push(workoutSet);
+            workoutSet = [];
           }
         } 
-        dSec.push(element);
+        workoutSet.push(element);
       });
-      if (dSec.length) newDataArray.push(dSec);
-      this.setState({data: newDataArray});
+      if (workoutSet.length) workoutSetList.push(workoutSet);
+      this.setState({data: workoutSetList});
     });
   }
 

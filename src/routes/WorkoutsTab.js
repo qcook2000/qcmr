@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { db } from './firebase';
+import { db } from '../firebase';
 import Grid from '@material-ui/core/Grid';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-import LogSetDialog from './LogSetDialog';
-import WorkoutHistorySection from './WorkoutHistorySection';
+import LogSetDialog from '../LogSetDialog';
+import WorkoutHistorySection from '../WorkoutHistorySection';
 
 const styles = theme => ({
   button: {
@@ -102,6 +102,8 @@ class WorkoutsTab extends React.Component {
     );
   }
 }
+
+WorkoutsTab.label = 'Workout';
 
 WorkoutsTab.propTypes = {
   classes: PropTypes.object.isRequired,

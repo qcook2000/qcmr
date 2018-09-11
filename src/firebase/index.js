@@ -7,12 +7,12 @@ import 'firebase/firestore';
 //
 
 const config = {
-  apiKey: "AIzaSyAcr_Yi9iV9cg7v9QLGfm3ugoorGdTtRo8",
-  authDomain: "canmikeeatthis.firebaseapp.com",
-  databaseURL: "https://canmikeeatthis.firebaseio.com",
-  projectId: "canmikeeatthis",
-  storageBucket: "canmikeeatthis.appspot.com",
-  messagingSenderId: "860540540828"
+  apiKey: "AIzaSyDV1VIjojv4GNUau4eya6sgwDdt3vh1bZY",
+  authDomain: "qcmrsite.firebaseapp.com",
+  databaseURL: "https://qcmrsite.firebaseio.com",
+  projectId: "qcmrsite",
+  storageBucket: "qcmrsite.appspot.com",
+  messagingSenderId: "884006522500"
 };
 
 if (!firebase.apps.length) {
@@ -53,19 +53,25 @@ db.Types = {
   Reference: 5,
 }
 
-const collectionName = ''; // FILL WITH COLLECTION NAME
-const data = [
-  // FILL WITH BATCH DATA
-];
+// const collectionName = ''; // FILL WITH COLLECTION NAME
+// const data = [
+//   // FILL WITH BATCH DATA
+// ];
 
 db.uploadData = () => {
-  for(var i = 0; i < data.length; i++) {
-      db.collection(collectionName).add(data[i]).then(function(response) {
-        console.log("Success!", response);
-      }, function(error) {
-        console.error("Failed!", error);
-      });
-  }
+  db.collection('workouts').onSnapshot(querySnapshot => {
+    // Get a new write batch
+    var batch = db.batch();
+    querySnapshot.forEach(element => {
+      batch.set(element, {exercise: db.collection('exercise').doc(element.data().exercise.id)});
+    });
+    // Commit the batch
+    batch.commit().then(response => {
+      console.log(response);
+    }).catch(error => {
+      console.log(error);
+    });
+  });
 }
 
 export {

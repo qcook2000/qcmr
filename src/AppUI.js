@@ -20,42 +20,32 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import CanMikeEatTab from './CanMikeEatTab';
-import ExercisesTab from './ExercisesTab';
-import WorkoutsTab from './WorkoutsTab';
-import ProfileTab from './ProfileTab';
-import WHistoryLog from './WHistoryLog';
-import FoodSearchTab from './FoodSearchTab';
+import ExercisesTab from './routes/ExercisesTab';
+import WorkoutsTab from './routes/WorkoutsTab';
+import GraphTab from './routes/GraphTab';
+import WHistoryLog from './routes/WorkoutHistoryTab';
 
 import { Switch, Route, NavLink } from 'react-router-dom'
 import LoginSignupDialog from './LoginSignupDialog';
 import withAuthentication from './withAuthentication';
 import AuthUserContext from './AuthUserContext';
-import { auth } from './firebase';
+import { auth, db } from './firebase';
 
 
 const drawerWidth = 240;
 const tabs = [
   { 
-    name:'Mike\'s Foods', 
-    route:'/mikes-foods',
-    component: CanMikeEatTab,
-  },{ 
-    name:'Workout', 
     route:'/workout',
     component: WorkoutsTab,
   },{ 
-    name:'Exercises', 
     route:'/exercises',
     component: ExercisesTab,
   },{ 
-    name:'Workout History', 
     route:'/workout-history',
     component: WHistoryLog,
   },{ 
-    name:'Profile',
-    route:'/profile',
-    component: ProfileTab,
+    route:'/graphs',
+    component: GraphTab,
   }
 ];
 
@@ -139,6 +129,7 @@ class ResponsiveDrawer extends React.Component {
   }
 
   handleLogoutCancel = () => {
+    db.uploadData();
     this.setState({ logoutOpen: false });
   }
 
@@ -170,7 +161,7 @@ class ResponsiveDrawer extends React.Component {
           {tabs.map( (tab, index) => {
             return (
               <ListItem button component={NavLink} activeClassName={classes.activeNav} to={tab.route} key={index} onClick={this.handleDrawerToggle}>
-                <ListItemText primary={tab.name} />
+                <ListItemText primary={tab.component.label} />
               </ListItem>
             );
           }, this)}
@@ -233,7 +224,7 @@ class ResponsiveDrawer extends React.Component {
                 <Route key={index} path={tab.route} component={tab.component}/>
               );
             }, this)}
-            <Route path='/' component={FoodSearchTab}/>
+            <Route path='/' component={WorkoutsTab}/>
           </Switch>
         </main>
         <LoginSignupDialog open={this.state.loginOpen} handleClose={this.handleLoginDialogClose}/>

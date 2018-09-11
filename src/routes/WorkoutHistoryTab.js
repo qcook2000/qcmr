@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { db } from './firebase';
-import FireStoreTablePage from './FireStoreTablePage';
+import { db } from '../firebase';
+import FireStoreTablePage from '../FireStoreTablePage';
 
 const styles = theme => ({
   
@@ -36,7 +36,7 @@ const settings = {
   drawerItemName: 'Exercise',
 }
 
-class WHistoryLog extends React.Component {
+class WorkoutHistoryTab extends React.Component {
   
   handleChange = (event, value) => {
     this.setState({ value });
@@ -51,8 +51,10 @@ class WHistoryLog extends React.Component {
   }
 }
 
-WHistoryLog.propTypes = {
+WorkoutHistoryTab.label = 'Workout History';
+
+WorkoutHistoryTab.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(WHistoryLog);
+export default withStyles(styles)(WorkoutHistoryTab);

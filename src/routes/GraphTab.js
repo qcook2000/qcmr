@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { db } from './firebase';
+import { db } from '../firebase';
 import ReactChartkick from 'react-chartkick';
 import Chart from 'chart.js';
 import PubSub from 'pubsub-js';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import '../node_modules/react-vis/dist/style.css';
+import '../../node_modules/react-vis/dist/style.css';
 import {
     XYPlot,
     XAxis,
@@ -45,7 +45,7 @@ const myDatadata = [
     {angle: 7, radius: 4, label: 'purps',innerRadius: 3}
 ]
 
-class CoolGraph extends React.Component {
+class GraphTab extends React.Component {
     constructor(props) {
         super(props);
 
@@ -169,8 +169,10 @@ class CoolGraph extends React.Component {
   }
 }
 
-CoolGraph.propTypes = {
+GraphTab.label = 'Graphs';
+
+GraphTab.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CoolGraph);
+export default withStyles(styles)(GraphTab);

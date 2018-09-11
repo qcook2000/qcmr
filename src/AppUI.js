@@ -145,7 +145,7 @@ class ResponsiveDrawer extends React.Component {
 
   titleForPath = (path) => {
     var tab = tabs.find(tab => { return tab.route === '/' + path });
-    return tab ? tab.name : '[No Title]';
+    return tab ? tab.component.label : '[No Title]';
   }
 
   render() {

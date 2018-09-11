@@ -9,9 +9,12 @@ import {
   Grid,
   Typography,
   withMobileDialog,
-  withStyles
+  withStyles,
+  Hidden,
+  FormHelperText
 } from '@material-ui/core';
 import FirestoreSelect from './FirestoreSelect';
+import DateTimePicker from 'material-ui-pickers/DateTimePicker';
 import { db } from './firebase';
 import moment from 'moment';
 
@@ -28,6 +31,8 @@ const styles = theme => ({
 
 
 const inputs = ['Q Reps', 'Q Weight', 'C Reps', 'C Weight'];
+const initialMaxReps = [10, 10];
+const initialMaxWeight = [100, 100];
 
 class LogSetDialog extends React.Component {
   constructor(props) {
@@ -36,8 +41,8 @@ class LogSetDialog extends React.Component {
       dateTime: new Date(),
       exercise: null,
       values:['','','','','','','','','','','','',],
-      maxReps: [10, 10],
-      maxWeight: [100, 100],
+      maxReps: initialMaxReps,
+      maxWeight: initialMaxWeight,
       exerciseOptions: [],
       loading: false,
     };
@@ -61,7 +66,6 @@ class LogSetDialog extends React.Component {
   }
 
   updatePlaceholders = (exercisePath) => {
-    console.log('HERE', db.doc(exercisePath));
     db.collection('workouts').where('exercise', '==', db.doc(exercisePath)).get()
     .then(querySnapshot => {
       var newMaxWeight = [undefined, undefined]
@@ -142,8 +146,14 @@ class LogSetDialog extends React.Component {
   }
 
   handleExerciseChange = option => {
-    this.setState({exercise: option});
-    this.updatePlaceholders('exercises/'+option.value);
+    console.log(option);
+    if (!option.value) {
+      this.setState({exercise: null});
+      this.setState({maxReps: initialMaxReps, maxWeight: initialMaxWeight});
+    } else {
+      this.setState({exercise: option});
+      this.updatePlaceholders('exercises/'+option.value);
+    }
   };
 
   placeholderForIndex = index => {
@@ -157,6 +167,14 @@ class LogSetDialog extends React.Component {
     }
     return '' + array[qOrC];
   };
+
+  updateDate = date => {
+    this.setState({dateTime:date});
+  }
+
+  openPicker = () => {
+    this.picker.open();
+  }
 
   render() {
     return (
@@ -175,15 +193,15 @@ class LogSetDialog extends React.Component {
                   onChange={this.handleExerciseChange}
                   value={this.state.exercise}
                 />
-              </Grid>
-              <Grid item xs={12} >
-                <Typography variant='caption'>
-                  Side weights: 
-                  <b> {((this.state.maxWeight[0] - 45) / 2)}</b> | 
-                  <b> {((this.state.maxWeight[1] - 45) / 2)}</b> (w/o bar: 
-                  <b> {(this.state.maxWeight[0] / 2)}</b> | 
-                  <b> {(this.state.maxWeight[1] / 2)}</b>)
-                </Typography>
+                {!this.state.exercise ? null :
+                  <FormHelperText>
+                    Side weights: 
+                    <b> {((this.state.maxWeight[0] - 45) / 2)}</b> | 
+                    <b> {((this.state.maxWeight[1] - 45) / 2)}</b> (w/o bar: 
+                    <b> {(this.state.maxWeight[0] / 2)}</b> | 
+                    <b> {(this.state.maxWeight[1] / 2)}</b>)
+                  </FormHelperText>
+                }
               </Grid>
               {inputs.map( (value, index) => {
                 return (
@@ -205,6 +223,15 @@ class LogSetDialog extends React.Component {
                   </Grid>
                 );
               }, this)}
+              <Grid item xs={12}>
+                <Typography variant='caption' onClick={this.openPicker}>{moment(this.state.dateTime).format("dddd, MMM Do 'YY, h:mm a")} | Change</Typography>
+                <DateTimePicker
+                  style={{display:'none'}}
+                  ref={(node) => { this.picker = node; }}
+                  value={this.state.dateTime}
+                  onChange={this.updateDate}
+                />
+              </Grid>
               <Grid item xs={12} className={this.props.classes.buttons}>
                 <Button onClick={this.props.handleClose} color="secondary">
                   Cancel

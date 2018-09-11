@@ -1,22 +1,8 @@
 // @@START_GENERATED_FUNCTIONS@@
-function isCanEatOptionMessage(resource) {
-  return resource.keys().hasAll([]) &&
-          (resource.keys().hasOnly(['name'])) &&
-          ((!resource.keys().hasAny(['name'])) || (resource.name is string));
-}
 function isExerciseMessage(resource) {
   return resource.keys().hasAll([]) &&
           (resource.keys().hasOnly(['name'])) &&
           ((!resource.keys().hasAny(['name'])) || (resource.name is string));
-}
-function isFoodItemMessage(resource) {
-  return resource.keys().hasAll([]) &&
-          (resource.keys().hasOnly(['caneat','updated','notes','category','name'])) &&
-          ((!resource.keys().hasAny(['name'])) || (resource.name is string)) &&
-          ((!resource.keys().hasAny(['category'])) || (resource.category is string)) &&
-          ((!resource.keys().hasAny(['notes'])) || (resource.notes is string)) &&
-          ((!resource.keys().hasAny(['updated'])) || (resource.updated is timestamp)) &&
-          ((!resource.keys().hasAny(['caneat'])) || (resource.caneat is path));
 }
 function isWorkoutMessage(resource) {
   return resource.keys().hasAll([]) &&
@@ -31,21 +17,13 @@ function isWorkoutMessage(resource) {
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /can-eat-options/{option} {
-      allow read: if true;
-      allow write: if isCanEatOptionMessage(request.resource.data) && isQC();
-    }
     match /exercises/{exercise} {
-      allow read: if isQC();
-      allow write: if isExerciseMessage(request.resource.data) && isQC();
-    }
-    match /food-items/{foodItem} {
-      allow read: if true;
-      allow write: if isFoodItemMessage(request.resource.data) && isQC();
+      allow read,delete: if isQC();
+      allow create,update: if isExerciseMessage(request.resource.data) && isQC();
     }
     match /workouts/{workout} {
-      allow read: if isQC();
-      allow write: if isWorkoutMessage(request.resource.data) && isQC();
+      allow read,delete: if isQC();
+      allow create,update: if isWorkoutMessage(request.resource.data) && isQC();
     }
   }
 }

@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Grid, Typography, Divider } from '@material-ui/core';
 import ReferenceCell from './ReferenceCell';
+import moment from 'moment';
 
 const styles = theme => ({
   paper: {
     padding: theme.spacing.unit,
   },
-  rLabel: {
-    
+  divider: {
+    marginTop: theme.spacing.unit,
   }
 });
 
@@ -33,8 +34,9 @@ class CanMikeEatTab extends React.Component {
       <Paper className={this.props.classes.paper}>
         <Grid container spacing={8}>
           <Grid item xs={12}>
+            <Typography variant='caption'>{moment(this.props.data[0].data().timestamp.toDate()).format('ddd, h:mmA')}</Typography>
             <Typography variant='title'><ReferenceCell key={this.props.data[0].data().exercise.id} path={'exercises/'+this.props.data[0].data().exercise.id}/></Typography>
-            <Divider/>
+            <Divider className={this.props.classes.divider}/>
           </Grid>
           <Grid item xs={1}><Typography align='left' variant='title' className={this.props.classes.rLabel}>Q</Typography></Grid>
           <Grid item xs={5}>

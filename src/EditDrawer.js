@@ -70,6 +70,14 @@ class EditDrawer extends React.Component {
     });
   }
 
+  handleDelete = () => {
+    db.collection(this.props.settings.path).doc(this.props.editingItemId).delete().then(response => {
+      console.log("Deleted!", response);
+      this.props.handleClose();
+    }, error => {
+      console.error("Failed!", error);
+    });
+  }
 
   handleAddOrSave = () => {
     var newItem = {}
@@ -164,11 +172,18 @@ class EditDrawer extends React.Component {
             );
           }, this)}
         </form>
-        <Button onClick={handleClose} color="secondary">
-          Cancel
-        </Button>
-        <Button onClick={this.handleAddOrSave} color="primary">
+        <Button onClick={this.handleAddOrSave} color="primary" variant='contained'>
           {this.titlePrefix() + settings.drawerItemName}
+        </Button>
+        <br/>
+        {this.props.editingItem === 'new' ? null :
+          <Button onClick={this.handleDelete} color="secondary" variant='outlined'>
+            Delete
+          </Button>
+        }
+        <br/>
+        <Button onClick={handleClose} variant='outlined'>
+          Cancel
         </Button>
       </Drawer>
     );

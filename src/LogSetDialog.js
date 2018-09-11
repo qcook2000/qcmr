@@ -38,7 +38,7 @@ class LogSetDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateTime: new Date(),
+      dateTime: moment(),
       exercise: null,
       values:['','','','','','','','','','','','',],
       maxReps: initialMaxReps,
@@ -97,7 +97,7 @@ class LogSetDialog extends React.Component {
     // Get a new write batch
     var batch = db.batch();
     var index = 0;
-    var date = new Date();
+    var date = this.state.dateTime;
     var peeps = ['Q', 'C'];
     var docs = [];
     while (this.state.values.length > index) {
@@ -105,7 +105,7 @@ class LogSetDialog extends React.Component {
       for (var i = 0; i < 2; i++) {
         if (vs[index] !== '' && vs[index+1] !== '') {
           // We have data
-          var ts = db.timestampFromDate(date);
+          var ts = db.timestampFromMoment(date);
           var log = db.collection('workouts').doc();
           docs.push(log);
           batch = batch.set(log, { 
@@ -114,7 +114,7 @@ class LogSetDialog extends React.Component {
             reps: vs[index+0], 
             weight: vs[index+1], 
             timestamp: ts });
-          date = moment(date).add(1, 'milliseconds').toDate()
+          date = moment(date).add(1, 'milliseconds')
         }
         index += 2;
       }  

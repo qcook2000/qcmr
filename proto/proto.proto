@@ -3,20 +3,8 @@ import "google/protobuf/timestamp.proto";
 import "firebase_rules_options.proto";
 package qc;
 
-message CanEatOption {
-  string name = 1;
-}
-
 message Exercise {
   string name = 1;
-}
-
-message FoodItem {
-  string name = 1;
-  string category = 2;
-  string notes = 3;
-  google.protobuf.Timestamp updated = 4;
-  string caneat = 5 [(google.firebase.rules.firebase_rules_field).reference_type = true];
 }
 
 message Workout {

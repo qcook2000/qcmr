@@ -33,7 +33,7 @@ import GraphTab from './routes/GraphTab';
 import WHistoryLog from './routes/WorkoutHistoryTab';
 
 import { Switch, Route, NavLink } from 'react-router-dom'
-import LoginSignupDialog from './LoginSignupDialog';
+import LoginSignupDialog from './components/LoginSignupDialog';
 import withAuthentication from './withAuthentication';
 import AuthUserContext from './AuthUserContext';
 import { auth, db } from './firebase';

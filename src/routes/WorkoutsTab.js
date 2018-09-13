@@ -7,8 +7,8 @@ import DatePicker from 'material-ui-pickers/DatePicker';
 import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-import LogSetDialog from '../LogSetDialog';
-import WorkoutHistorySection from '../WorkoutHistorySection';
+import LogSetDialog from '../components/LogSetDialog';
+import WorkoutHistorySection from '../components/WorkoutHistorySection';
 
 const styles = theme => ({
   button: {

@@ -10,7 +10,6 @@ import {
   Typography,
   withMobileDialog,
   withStyles,
-  Hidden,
   FormHelperText
 } from '@material-ui/core';
 import FirestoreSelect from './FirestoreSelect';

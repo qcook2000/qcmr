@@ -17,8 +17,15 @@ import {
   Dialog,
   DialogTitle,
   DialogActions,
+  ListItemIcon
 } from '@material-ui/core';
+import { purple, cyan } from '@material-ui/core/colors';
 import MenuIcon from '@material-ui/icons/Menu';
+import TrendingUp from '@material-ui/icons/TrendingUp';
+import FitnessCenter from '@material-ui/icons/FitnessCenter';
+import AvTimer from '@material-ui/icons/AvTimer';
+import Create from '@material-ui/icons/Create';
+import BatteryChargingFull from '@material-ui/icons/BatteryChargingFull';
 
 import ExercisesTab from './routes/ExercisesTab';
 import WorkoutsTab from './routes/WorkoutsTab';
@@ -37,15 +44,19 @@ const tabs = [
   { 
     route:'/workout',
     component: WorkoutsTab,
+    icon: <Create/>,
   },{ 
     route:'/exercises',
     component: ExercisesTab,
+    icon: <FitnessCenter/>,
   },{ 
     route:'/workout-history',
     component: WHistoryLog,
+    icon: <AvTimer/>,
   },{ 
     route:'/graphs',
     component: GraphTab,
+    icon: <TrendingUp/>,
   }
 ];
 
@@ -65,20 +76,19 @@ const styles = theme => ({
       width: `calc(100% - ${drawerWidth}px)`,
     },
   },
+  menuToolbar: {
+    background: `linear-gradient(45deg, ${cyan[800]} 20%, ${purple[900]} 80%)`, // Some CSS
+  },
   navIconHide: {
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
+    marginLeft: theme.spacing.unit * -1,
   },
-  toolbar: theme.mixins.toolbar,
   logo: {
-    width: '100%',
-    height: '100%',
-    background: 'url(logo.png)',
-    backgroundSize: 'auto 50%',
-    backgroundPosition: `${theme.spacing.unit * 3}px center`,
-    backgroundRepeat: 'no-repeat',
-    position: 'absolute',
+    fontSize: '36px',
+    marginLeft: '-8px',
+    color: '#fff',
   },
   drawerPaper: {
     width: drawerWidth,
@@ -88,17 +98,23 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
+    display: 'flex',
+    minHeight: '100vh',
+    flexDirection: 'column',
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing.unit * 2,
     [theme.breakpoints.up('md')]: {
       marginLeft: drawerWidth,
     },
   },
   activeNav: {
-    backgroundColor: theme.palette.grey[300],
+    backgroundColor: theme.palette.background.default,
   },
   flex: {
     flexGrow: 1,
+  },
+  menuItem: {
+    padding: 0,
   },
 });
 
@@ -153,15 +169,19 @@ class ResponsiveDrawer extends React.Component {
 
     const drawer = (
       <div>
-        <div className={classes.toolbar} style={{position:'relative'}}>
-          <NavLink className={classes.logo} to='/' onClick={this.handleDrawerToggle}></NavLink>
-        </div>
+        <Toolbar className={classes.menuToolbar}>
+          <BatteryChargingFull className={classes.logo}/>
+          <Typography variant='title'>CQ.run</Typography>
+        </Toolbar>
         <Divider />
         <List component="nav">
           {tabs.map( (tab, index) => {
             return (
               <ListItem button component={NavLink} activeClassName={classes.activeNav} to={tab.route} key={index} onClick={this.handleDrawerToggle}>
-                <ListItemText primary={tab.component.label} />
+                <ListItemIcon>
+                  {tab.icon}
+                </ListItemIcon>
+                <ListItemText className={classes.menuItem} primary={tab.component.label} />
               </ListItem>
             );
           }, this)}
@@ -182,7 +202,7 @@ class ResponsiveDrawer extends React.Component {
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar}>
-          <Toolbar>
+          <Toolbar className={classes.toolBar}>
             <IconButton color="inherit" onClick={this.handleDrawerToggle} className={classes.navIconHide}>
               <MenuIcon />
             </IconButton>
@@ -217,7 +237,7 @@ class ResponsiveDrawer extends React.Component {
           </Drawer>
         </Hidden>
         <main className={classes.content}>
-          <div className={classes.toolbar} />
+          <Toolbar></Toolbar>
           <Switch>
             {tabs.map( (tab, index) => {
               return (

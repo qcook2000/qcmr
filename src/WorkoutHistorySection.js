@@ -7,7 +7,7 @@ import moment from 'moment';
 
 const styles = theme => ({
   paper: {
-    padding: theme.spacing.unit,
+    padding: theme.spacing.unit * 2,
   },
   divider: {
     marginTop: theme.spacing.unit,

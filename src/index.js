@@ -8,7 +8,7 @@ import AppUI from './AppUI';
 import { BrowserRouter } from 'react-router-dom';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { purple, red, cyan, grey } from '@material-ui/core/colors';
+import { purple, red, cyan } from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
   typography: {
@@ -75,7 +75,6 @@ class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-        
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <CssBaseline />
           <MuiThemeProvider theme={theme}>

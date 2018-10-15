@@ -1,178 +1,145 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { db } from '../firebase';
-import ReactChartkick from 'react-chartkick';
-import Chart from 'chart.js';
-import PubSub from 'pubsub-js';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import '../../node_modules/react-vis/dist/style.css';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import { db, firestore } from "../firebase";
+import ReactChartkick from "react-chartkick";
+import Chart from "chart.js";
+import PubSub from "pubsub-js";
+import { Paper, Typography, Grid } from "@material-ui/core";
+import "../../node_modules/react-vis/dist/style.css";
+import "../";
 import {
-    XYPlot,
-    XAxis,
-    YAxis,
-    VerticalGridLines,
-    HorizontalBarSeries,
-    RadialChart
-} from 'react-vis';
+  FlexibleWidthXYPlot,
+  XAxis,
+  YAxis,
+  VerticalGridLines,
+  AreaSeries,
+  MarkSeries,
+  Hint
+} from "react-vis";
+import moment from "moment";
 
-ReactChartkick.addAdapter(Chart);
+const GraphElement = props => {
+  return <Typography>{props.children}</Typography>;
+};
 
-const styles = theme => ({
-    root: {
-        ...theme.mixins.gutters(),
-        paddingTop: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
-        margin: theme.spacing.unit * 2,
-      },
-});
+class GraphTab extends Component {
+  state = {
+    collectionData: [],
+    qData: [],
+    cData: [],
+    qVal: null,
+    cVal: null,
+    currDate: null
+  };
 
-const myData = [
-    {angle: 7, radius: 2, label: 'Carrots', innerRadius: 0},
-    {angle: 7, radius: 5, label: 'blue',innerRadius: 3},
-    {angle: 7, radius: 2, label: 'red',innerRadius: 0},
-    {angle: 7, radius: 5, label: 'green',innerRadius: 3},
-    {angle: 7, radius: 2, label: 'o-range',innerRadius: 0},
-    {angle: 7, radius: 5, label: 'purps',innerRadius: 3}
-]
-const myDatadata = [
-    {angle: 7, radius: 4, label: 'Carrots', innerRadius: 3},
-    {angle: 7, radius: 4, label: 'blue',innerRadius: 3},
-    {angle: 7, radius: 4, label: 'red',innerRadius: 3},
-    {angle: 7, radius: 4, label: 'green',innerRadius: 3},
-    {angle: 7, radius: 4, label: 'o-range',innerRadius: 3},
-    {angle: 7, radius: 4, label: 'purps',innerRadius: 3}
-]
+  constructor(props) {
+    super(props);
+    this.getRawDatabase();
+  }
 
-class GraphTab extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            rawDatabase: {},
-            dbRecords: [],
-            reactvisGraphData: [],
-            radialData: myDatadata
-
-        };
-        this.rawDatabase = {};
-        this.dbRecords = [];  
-
-        this.getRawDatabase();
-        setTimeout(e => {
-            this.setState({radialData: myData});
-        } , 2000)
-    }
-
-
-
-    getRawDatabase = () => {
-        var allFoodItems = db.collection('food-items');
-        allFoodItems.get().then(collection => {
-            this.rawDatabase = collection;
-        })
-        .then(this.transformData)  
-    }
-
-    transformData = () => {
-        //Converts the raw Firestore collection to an array of records.
-        this.rawDatabase.forEach(element => {
-            this.dbRecords.push(element.data());
+  getRawDatabase = () => {
+    var collectionRef = db.collection("powerchart");
+    collectionRef
+      .orderBy("date")
+      .get()
+      .then(collectionSnapshot => {
+        let collectionData = [];
+        let qData = [];
+        let cData = [];
+        this.setState({ collectionRef });
+        collectionSnapshot.forEach(doc => {
+          let record = doc.data();
+          collectionData.push({ ...record, id: doc.id });
+          let personData = record.person === "Q" ? qData : cData;
+          personData.push({
+            x: record.date.toDate(),
+            y: record.power
+          });
         });
-        var chartStates = this.sortedAndEmptyDict(this.getCategories());
-        var categoriesZero = chartStates[0];
-        // console.log(categoriesZero);
-        var categoriesSorted = chartStates[1];
-        // console.log(categoriesSorted);
-        
-        this.setState ({reactvisGraphData: categoriesZero})
-        console.log(this.state.reactvisGraphData);
-        setTimeout(e => {
-            this.setState({reactvisGraphData: categoriesSorted});
-            console.log(this.state.reactvisGraphData);
-        } , 5000)
-    }
+        this.setState({ collectionData, qData, cData });
 
-    getCategories = () => {
-        //Returns a dictionary of categories with counts of given category
-        var categoryDict = {}; 
-        this.dbRecords.forEach(element => {
-            var category = element.category;
-            if (category in categoryDict) {
-                categoryDict[category] = categoryDict[category] + 1;
-            } else {
-                categoryDict[category] = 1;
-            }
-        });
-        return categoryDict;
-    }
+        console.log(this.state.collectionData);
+      });
+  };
 
-    sortedAndEmptyDict = (dictToSort) => {
-        //Sorts a given dictionary based on dict values.
-        //Returns react-vis readable graph data with labels
-        var sortedData = Object.keys(dictToSort).map(function(key) {
-            return [key, dictToSort[key]];
-        });
-        sortedData.sort(function(first, second) {
-            return first[1] - second[1]; //sort min to max. reverse to sort max to min.
-        });
-        //Store the data into a react-vis readable graph data with labels
-        var sortedDataEmpty = [];
-        var max = sortedData[0][1];
-        for (var i = 0; i < sortedData.length; i++) {
-            sortedData[i] = { x: sortedData[i][1], y:i, label: sortedData[i][0]};
-            sortedDataEmpty[i] = {x: 0, y:i, label: sortedData[i].label };
-            max = sortedData[i].x > max ? sortedData[i].x : max;
-        };
-        sortedDataEmpty.push({x: max, y: 0, label: 'hello'})
-        var sortedAndEmptyData = [sortedDataEmpty, sortedData];
-        return sortedAndEmptyData;
-    }
+  renderGraphElements = () => {
+    console.log(this);
+    return this.state.collectionData.map(doc => (
+      <Typography key={doc.id}>{doc.power}</Typography>
+    ));
+  };
 
-    graphMarkClicked = (datapoint, event) => {
-        PubSub.publish('tabChange', {tabIndex: 0, eatTabFilter: ['category', '==', datapoint.label]});
-    }
+  renderHint = () => {
+    const { hintStyle } = styles;
+    const { qVal, cVal } = this.state;
+    console.log(qVal.x);
+    return (
+      <Paper style={hintStyle}>
+        <Typography variant="caption">
+          {moment(qVal.x).format("YYYY-MM-DD")}
+        </Typography>
+        <Typography variant="caption">
+          Q: {qVal.y}
+          <br />
+          C: {cVal.y - cVal.y0}
+          <br />
+          Total: {cVal.y}
+        </Typography>
+      </Paper>
+    );
+  };
 
   render() {
-    const { classes } = this.props;
     return (
-      <Paper className={classes.root}>
-        <Typography variant='title'>The Most Added Items</Typography>
-        <XYPlot margin={{left: 100}} height={300} width= {700}>
-            <VerticalGridLines />
-            <XAxis tickTotal={10}/>
-            <YAxis tickFormat={v => (
-                this.state.reactvisGraphData[v] ? this.state.reactvisGraphData[v].label : null
-                )} />
-          <HorizontalBarSeries
-            data={this.state.reactvisGraphData}
-            opacity={1}
-            onValueClick={this.graphMarkClicked}
-            animation/>
-        </XYPlot>
-        <RadialChart
-            data={myData}
-            width={300}
-            height={300}
-            animation
-            />
-        <RadialChart
-            data={this.state.radialData}
-            width={300}
-            height={300}
-            animation
-            />
-            
+      <Paper style={styles.paperStyle}>
+        <FlexibleWidthXYPlot
+          height={300}
+          stackBy="y"
+          xType="time"
+          yDomain={[0, 50000]}
+        >
+          <YAxis />
+          <XAxis
+            tickLabelAngle={-75}
+            tickFormat={v => moment(v).format("MM/DD")}
+          />
+          <AreaSeries
+            curve="curveNatural"
+            opacity={0.5}
+            onNearestX={value => {
+              this.setState({ qVal: value });
+            }}
+            data={this.state.qData}
+            stack={true}
+          />
+          <AreaSeries
+            curve="curveNatural"
+            opacity={0.5}
+            onNearestX={value => {
+              this.setState({ cVal: value });
+            }}
+            data={this.state.cData}
+            stack={true}
+          />
+          {this.state.qVal ? (
+            <Hint value={this.state.qVal}>{this.renderHint()}</Hint>
+          ) : null}
+        </FlexibleWidthXYPlot>
       </Paper>
     );
   }
 }
 
-GraphTab.label = 'Graphs';
+GraphTab.label = "Power Graph";
 
-GraphTab.propTypes = {
-  classes: PropTypes.object.isRequired,
+const styles = {
+  hintStyle: {
+    padding: 10
+  },
+  paperStyle: {
+    padding: 20
+  }
 };
 
-export default withStyles(styles)(GraphTab);
+export default GraphTab;

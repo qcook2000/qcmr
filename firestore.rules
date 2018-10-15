@@ -25,6 +25,9 @@ service cloud.firestore {
       allow read,delete: if isQC();
       allow create,update: if isWorkoutMessage(request.resource.data) && isQC();
     }
+    match /powerchart/{chartData} {
+      allow read,write: if isQC();
+    }
   }
 }
 
